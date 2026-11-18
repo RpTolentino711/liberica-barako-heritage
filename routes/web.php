@@ -39,4 +39,29 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::patch('/messages/{message}',[AdminController::class,'updateMessage'])->name('messages.update');
     Route::get('/settings',[AdminController::class,'settings'])->name('settings');
     Route::put('/settings',[AdminController::class,'saveSettings'])->name('settings.save');
+    Route::get('/link-storage', function () {
+        try {
+            \Illuminate\Support\Facades\Artisan::call('storage:link');
+            return back()->with('ok', 'Storage linked successfully: ' . \Illuminate\Support\Facades\Artisan::output());
+        } catch (\Throwable $e) {
+            return back()->withErrors(['storage' => 'Could not link storage: ' . $e->getMessage()]);
+        }
+    })->name('storage.link');
 });
+
+// Secure shared-hosting storage fallback route
+Route::get('/storage/{path}', function (string $path) {
+    $basePath = realpath(storage_path('app/public'));
+    $targetPath = realpath(storage_path('app/public/' . $path));
+
+    if (!$targetPath || !$basePath || !str_starts_with($targetPath, $basePath) || !is_file($targetPath)) {
+        abort(404);
+    }
+
+    return response()->file($targetPath);
+})->where('path', '.*')->name('storage.fallback');
+
+Route::get('/public/storage/{path}', function (string $path) {
+    return redirect('/storage/' . $path);
+})->where('path', '.*');
+
