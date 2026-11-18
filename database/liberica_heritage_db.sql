@@ -150,8 +150,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 -- Dumping data for table liberica_heritage_db.users: ~2 rows (approximately)
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `is_admin`, `remember_token`, `created_at`, `updated_at`) VALUES
-	(1, 'LIBÉRICA Administrator', 'bellaleus16@gmail.com', NULL, '$2y$12$D4Ba0/.5psDbrNnTagYwFedXk.fmZU3KpxltTe/DfIGaNMDD21dha', 1, NULL, '2026-11-14 15:03:11', '2026-11-14 16:27:01'),
-	(2, 'Admin', 'admin@example.com', NULL, '$2y$12$D4Ba0/.5psDbrNnTagYwFedXk.fmZU3KpxltTe/DfIGaNMDD21dha', 1, NULL, '2026-11-18 13:29:04', '2026-11-18 13:29:04');
+	(1, 'LIBÉRICA Administrator', 'bellaleus16@gmail.com', NULL, '$2y$12$7kVEkDiudTzaACOypoojkOdg5KgrLxuiduffsY8nSQSjEIPNlAn.K', 1, NULL, '2026-11-14 15:03:11', '2026-11-14 16:27:01'),
+	(2, 'Admin', 'admin@example.com', NULL, '$2y$12$lUQwcwIeE/H526.0bxPvR.NBUhcsI42sV2IyiA2ohugvAnZEpQXAG', 1, NULL, '2026-11-18 13:29:04', '2026-11-18 13:29:04');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
