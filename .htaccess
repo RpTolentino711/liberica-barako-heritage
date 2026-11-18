@@ -1,4 +1,5 @@
 <IfModule mod_rewrite.c>
+    Options +FollowSymLinks +SymLinksIfOwnerMatch
     RewriteEngine On
     
     # Protect sensitive files
