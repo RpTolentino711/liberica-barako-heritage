@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder {
             ['Local History — Lipa: Then and Now','City Government of Lipa','https://lipa.gov.ph/history/','Local coffee boom, elevation to Villa de Lipa, and later decline.'],
             ['Coffee Technoguide','Department of Agriculture — Agricultural Training Institute','https://ati2.da.gov.ph/ati-4b/content/sites/default/files/2022-11/Coffee%20Technoguide%20w%20page%20numbers.pdf','Government coffee guidance describing Liberica and Kapeng Barako.'],
             ['Liberica species profile','SICC','https://www.sicc.coffee/species/liberica/','Species characteristics and broader botanical context.'],
-            ['Batangas to standardize Kapeng Barako production','Philippine News Agency','https://www.pna.gov.ph/index.php/articles/1234070','2024 report about local quality and heritage initiatives.'],
+            ['Batangas to standardize Kapeng Barako production','Philippine News Agency','https://www.pna.gov.ph/articles/1234070','2024 report about local quality and heritage initiatives.'],
         ];
         foreach($references as [$title,$publisher,$url,$notes]) Reference::firstOrCreate(['url'=>$url],compact('title','publisher','notes')+['is_published'=>true]);
         $email=trim((string)env('ADMIN_EMAIL',''));

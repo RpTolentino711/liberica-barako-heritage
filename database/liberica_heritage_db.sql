@@ -15,9 +15,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
--- Dumping database structure for liberica_heritage_db
-CREATE DATABASE IF NOT EXISTS `liberica_heritage_db` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
-USE `liberica_heritage_db`;
 
 -- Dumping structure for table liberica_heritage_db.articles
 CREATE TABLE IF NOT EXISTS `articles` (
@@ -115,7 +112,7 @@ INSERT INTO `references` (`id`, `title`, `publisher`, `url`, `notes`, `is_publis
 	(1, 'Local History — Lipa: Then and Now', 'City Government of Lipa', 'https://lipa.gov.ph/history/', 'Local coffee boom, elevation to Villa de Lipa, and later decline.', 1, '2026-11-14 15:03:10', '2026-11-14 15:03:10'),
 	(2, 'Coffee Technoguide', 'Department of Agriculture — Agricultural Training Institute', 'https://ati2.da.gov.ph/ati-4b/content/sites/default/files/2022-11/Coffee%20Technoguide%20w%20page%20numbers.pdf', 'Government coffee guidance describing Liberica and Kapeng Barako.', 1, '2026-11-14 15:03:10', '2026-11-14 15:03:10'),
 	(3, 'Liberica species profile', 'SICC', 'https://www.sicc.coffee/species/liberica/', 'Species characteristics and broader botanical context.', 1, '2026-11-14 15:03:10', '2026-11-14 15:03:10'),
-	(4, 'Batangas to standardize Kapeng Barako production', 'Philippine News Agency', 'https://www.pna.gov.ph/index.php/articles/1234070', '2024 report about local quality and heritage initiatives.', 1, '2026-11-14 15:03:10', '2026-11-14 15:03:10');
+	(4, 'Batangas to standardize Kapeng Barako production', 'Philippine News Agency', 'https://www.pna.gov.ph/articles/1234070', '2024 report about local quality and heritage initiatives.', 1, '2026-11-14 15:03:10', '2026-11-14 15:03:10');
 
 -- Dumping structure for table liberica_heritage_db.settings
 CREATE TABLE IF NOT EXISTS `settings` (
