@@ -148,12 +148,14 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `users_email_unique` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table liberica_heritage_db.users: ~1 rows (approximately)
+-- Dumping data for table liberica_heritage_db.users: ~2 rows (approximately)
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `is_admin`, `remember_token`, `created_at`, `updated_at`) VALUES
-	(1, 'LIBÉRICA Administrator', 'bellaleus16@gmail.com', NULL, '$2y$12$7kVEkDiudTzaACOypoojkOdg5KgrLxuiduffsY8nSQSjEIPNlAn.K', 1, NULL, '2026-11-14 15:03:11', '2026-11-14 16:27:01');
+	(1, 'LIBÉRICA Administrator', 'bellaleus16@gmail.com', NULL, '$2y$12$D4Ba0/.5psDbrNnTagYwFedXk.fmZU3KpxltTe/DfIGaNMDD21dha', 1, NULL, '2026-11-14 15:03:11', '2026-11-14 16:27:01'),
+	(2, 'Admin', 'admin@example.com', NULL, '$2y$12$D4Ba0/.5psDbrNnTagYwFedXk.fmZU3KpxltTe/DfIGaNMDD21dha', 1, NULL, '2026-11-18 13:29:04', '2026-11-18 13:29:04');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
+
