@@ -6,14 +6,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="{{ asset('assets/coffee_Liberica_bean.png') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v=logout-confirm-1">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v=mobile-responsive-1">
 </head>
 <body class="admin-body">
-    <aside class="sidebar">
-        <a href="{{ route('admin.dashboard') }}" class="admin-logo" aria-label="LIBÉRICA Heritage administration dashboard">
-            <img src="{{ asset('assets/coffee_Liberica_bean.png') }}" alt="" class="admin-brand-image" width="48" height="48">
-            <span class="admin-brand-name">LIBÉRICA<small>HERITAGE ADMIN</small></span>
-        </a>
+    <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
+    <aside class="sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="{{ route('admin.dashboard') }}" class="admin-logo" aria-label="LIBÉRICA Heritage administration dashboard">
+                <img src="{{ asset('assets/coffee_Liberica_bean.png') }}" alt="" class="admin-brand-image" width="48" height="48">
+                <span class="admin-brand-name">LIBÉRICA<small>HERITAGE ADMIN</small></span>
+            </a>
+            <button type="button" id="adminCloseSidebar" class="admin-close-sidebar" aria-label="Close navigation">&times;</button>
+        </div>
         <nav aria-label="Admin navigation">
             <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">◫ &nbsp; Dashboard</a>
             <a href="{{ route('admin.articles') }}" class="{{ request()->routeIs('admin.articles*') ? 'active' : '' }}">☷ &nbsp; Educational Articles</a>
@@ -27,7 +31,25 @@
             <button type="button" id="openLogoutDialog" class="sidebar-logout-button" aria-haspopup="dialog" aria-controls="logoutDialog">LOG OUT</button>
         </div>
     </aside>
-    <div class="admin-main"><header class="admin-top"><div><small>LIBÉRICA / ADMINISTRATION</small><h1>@yield('title', 'Dashboard')</h1></div><span class="admin-account">{{ auth()->user()->name }}</span></header><div class="admin-content">@if(session('ok'))<div class="alert-success" role="status">{{ session('ok') }}</div>@endif @if($errors->any())<div class="alert-error" role="alert">{{ $errors->first() }}</div>@endif @yield('content')</div></div>
+    <div class="admin-main">
+        <header class="admin-top">
+            <div class="admin-top-left">
+                <button type="button" id="adminMenuToggle" class="admin-menu-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="adminSidebar">
+                    <span></span><span></span><span></span>
+                </button>
+                <div>
+                    <small>LIBÉRICA / ADMINISTRATION</small>
+                    <h1>@yield('title', 'Dashboard')</h1>
+                </div>
+            </div>
+            <span class="admin-account">{{ auth()->user()->name }}</span>
+        </header>
+        <div class="admin-content">
+            @if(session('ok'))<div class="alert-success" role="status">{{ session('ok') }}</div>@endif
+            @if($errors->any())<div class="alert-error" role="alert">{{ $errors->first() }}</div>@endif
+            @yield('content')
+        </div>
+    </div>
     {{-- Confirmation is required before posting to the existing logout route. --}}
     <dialog id="logoutDialog" class="logout-dialog" aria-labelledby="logoutDialogTitle" aria-describedby="logoutDialogDescription">
         <div class="logout-dialog-content">
@@ -46,20 +68,44 @@
     </dialog>
     <script>
         (() => {
+            // Sidebar mobile toggle
+            const sidebar = document.getElementById('adminSidebar');
+            const menuToggle = document.getElementById('adminMenuToggle');
+            const closeSidebar = document.getElementById('adminCloseSidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+
+            const toggleSidebar = (open) => {
+                const isOpen = open !== undefined ? open : !sidebar.classList.contains('is-open');
+                sidebar.classList.toggle('is-open', isOpen);
+                backdrop.classList.toggle('is-open', isOpen);
+                if (menuToggle) menuToggle.setAttribute('aria-expanded', String(isOpen));
+                document.body.classList.toggle('sidebar-locked', isOpen);
+            };
+
+            if (menuToggle) menuToggle.addEventListener('click', () => toggleSidebar());
+            if (closeSidebar) closeSidebar.addEventListener('click', () => toggleSidebar(false));
+            if (backdrop) backdrop.addEventListener('click', () => toggleSidebar(false));
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && sidebar && sidebar.classList.contains('is-open')) toggleSidebar(false);
+            });
+
+            // Logout dialog
             const dialog = document.getElementById('logoutDialog');
             const openButton = document.getElementById('openLogoutDialog');
             const cancelButton = document.getElementById('cancelLogoutDialog');
             const logoutForm = document.getElementById('logoutConfirmForm');
 
-            openButton.addEventListener('click', () => {
-                if (typeof dialog.showModal === 'function') {
-                    dialog.showModal();
-                } else if (window.confirm('Log out of LIBÉRICA Heritage administration?')) {
-                    logoutForm.requestSubmit();
-                }
-            });
-            cancelButton.addEventListener('click', () => dialog.close());
-            dialog.addEventListener('click', (event) => {
+            if (openButton && dialog) {
+                openButton.addEventListener('click', () => {
+                    if (typeof dialog.showModal === 'function') {
+                        dialog.showModal();
+                    } else if (window.confirm('Log out of LIBÉRICA Heritage administration?')) {
+                        logoutForm.requestSubmit();
+                    }
+                });
+            }
+            if (cancelButton && dialog) cancelButton.addEventListener('click', () => dialog.close());
+            if (dialog) dialog.addEventListener('click', (event) => {
                 if (event.target === dialog) dialog.close();
             });
         })();
