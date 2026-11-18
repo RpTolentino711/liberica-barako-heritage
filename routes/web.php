@@ -49,6 +49,25 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     })->name('storage.link');
 });
 
+Route::get('/check-storage', function () {
+    $publicStorage = public_path('storage');
+    $appPublic = storage_path('app/public');
+    
+    // Auto-create symlink if missing
+    if (!file_exists($publicStorage) && file_exists($appPublic)) {
+        @symlink($appPublic, $publicStorage);
+    }
+    
+    return response()->json([
+        'public_storage_exists' => file_exists($publicStorage),
+        'public_storage_is_link' => is_link($publicStorage),
+        'app_public_exists' => file_exists($appPublic),
+        'files_in_app_public' => file_exists($appPublic) ? scandir($appPublic) : [],
+        'files_in_gallery' => file_exists($appPublic . '/gallery') ? scandir($appPublic . '/gallery') : [],
+        'files_in_articles' => file_exists($appPublic . '/articles') ? scandir($appPublic . '/articles') : [],
+    ]);
+});
+
 // Secure shared-hosting storage fallback route
 Route::get('/storage/{path}', function (string $path) {
     $basePath = realpath(storage_path('app/public'));
