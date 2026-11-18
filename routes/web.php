@@ -53,7 +53,13 @@ Route::get('/check-storage', function () {
     $publicStorage = public_path('storage');
     $appPublic = storage_path('app/public');
     
-    // Auto-create symlink if missing
+    $linkTarget = is_link($publicStorage) ? readlink($publicStorage) : null;
+    
+    // If the symlink is broken, remove it and create a correct one
+    if (is_link($publicStorage) && !file_exists($publicStorage)) {
+        @unlink($publicStorage);
+    }
+    
     if (!file_exists($publicStorage) && file_exists($appPublic)) {
         @symlink($appPublic, $publicStorage);
     }
@@ -61,8 +67,10 @@ Route::get('/check-storage', function () {
     return response()->json([
         'public_storage_exists' => file_exists($publicStorage),
         'public_storage_is_link' => is_link($publicStorage),
+        'old_link_target' => $linkTarget,
+        'current_link_target' => is_link($publicStorage) ? readlink($publicStorage) : null,
+        'app_public_path' => $appPublic,
         'app_public_exists' => file_exists($appPublic),
-        'files_in_app_public' => file_exists($appPublic) ? scandir($appPublic) : [],
         'files_in_gallery' => file_exists($appPublic . '/gallery') ? scandir($appPublic . '/gallery') : [],
         'files_in_articles' => file_exists($appPublic . '/articles') ? scandir($appPublic . '/articles') : [],
     ]);
