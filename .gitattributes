@@ -1,0 +1,13 @@
+# Consistent line endings across Windows and Hostinger Linux
+* text=auto
+*.php text eol=lf
+*.blade.php text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.sh text eol=lf
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.webp binary

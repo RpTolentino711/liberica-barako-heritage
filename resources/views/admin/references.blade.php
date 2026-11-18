@@ -1,0 +1,7 @@
+@extends('layouts.admin')
+@section('title','References')
+@section('content')
+    <p class="lead">Cite reliable sources for heritage and coffee education content.</p>
+    <div class="panel form-panel"><h2>Add a reference</h2><form method="POST" action="{{ route('admin.references.store') }}">@csrf<label for="title">Source title *</label><input id="title" name="title" required maxlength="190"><label for="publisher">Publisher / institution *</label><input id="publisher" name="publisher" required maxlength="120"><label for="url">Web link *</label><input id="url" type="url" name="url" required maxlength="2048" placeholder="https://"><label for="notes">Notes</label><textarea id="notes" name="notes" maxlength="2000" rows="3"></textarea><label class="check"><input type="checkbox" name="is_published" value="1" checked> Show on public website</label><button class="primary-button" type="submit">ADD REFERENCE</button></form></div>
+    <div class="panel">@forelse($items as $item)<div class="list-row"><div><strong>{{ $item->title }}</strong><p>{{ $item->publisher }} · <a href="{{ $item->url }}" rel="noopener noreferrer" target="_blank">Open source ↗</a></p></div><form method="POST" action="{{ route('admin.references.delete',$item) }}" onsubmit="return confirm('Delete this reference?');">@csrf @method('DELETE')<button class="danger" type="submit">DELETE</button></form></div>@empty<p>No references yet.</p>@endforelse</div>
+@endsection
