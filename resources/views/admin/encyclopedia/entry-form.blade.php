@@ -13,6 +13,10 @@
             <textarea id="summary" name="summary" maxlength="500" rows="3" required>{{ old('summary', $entry?->summary) }}</textarea>
             <label for="body">Entry content *</label>
             <textarea id="body" name="body" maxlength="30000" rows="14" required>{{ old('body', $entry?->body) }}</textarea>
+            <div class="two-col">
+                <div><label for="source_label">Source name</label><input id="source_label" name="source_label" maxlength="240" value="{{ old('source_label', $entry?->source_label) }}" placeholder="Department of Agriculture"></div>
+                <div><label for="source_url">Source link (HTTPS)</label><input id="source_url" type="url" name="source_url" maxlength="2048" value="{{ old('source_url', $entry?->source_url) }}" placeholder="https://"></div>
+            </div>
             <label for="image">Optional image (JPG, PNG, WebP; max 4 MB)</label>
             <input id="image" type="file" name="image" accept="image/jpeg,image/png,image/webp">
             @if($entry?->image_path)<img class="image-preview" src="{{ asset('storage/'.$entry->image_path) }}" alt="Current entry image">@endif

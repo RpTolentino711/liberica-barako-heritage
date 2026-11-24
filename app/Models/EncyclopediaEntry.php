@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EncyclopediaEntry extends Model
 {
-    protected $fillable = ['topic_id', 'title', 'slug', 'summary', 'body', 'image_path', 'is_published', 'sort_order'];
+    protected $fillable = ['topic_id', 'title', 'slug', 'summary', 'body', 'image_path', 'source_label', 'source_url', 'is_published', 'sort_order'];
 
     protected function casts(): array
     {

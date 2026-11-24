@@ -106,6 +106,8 @@ class AdminEncyclopediaController extends Controller
             'summary' => ['required', 'string', 'max:500'],
             'body' => ['required', 'string', 'max:30000'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'source_label' => ['nullable', 'string', 'max:240'],
+            'source_url' => ['nullable', 'url:http,https', 'max:2048'],
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
         ]);
 
