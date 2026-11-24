@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\{Article, EncyclopediaTopic, GalleryItem, Reference, Message, Setting};
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class HomeController extends Controller {
     public function index() {
@@ -11,7 +12,9 @@ class HomeController extends Controller {
             'gallery' => GalleryItem::where('is_published', true)->orderBy('sort_order')->orderBy('id')->get(),
             'references' => Reference::where('is_published', true)->orderBy('id')->get(),
             'settings' => Setting::pluck('value', 'key')->all(),
-            'topics' => EncyclopediaTopic::where('is_published', true)->orderBy('sort_order')->orderBy('id')->get(),
+            'topics' => Schema::hasTable('encyclopedia_topics')
+                ? EncyclopediaTopic::where('is_published', true)->orderBy('sort_order')->orderBy('id')->get()
+                : collect(),
         ]);
     }
 

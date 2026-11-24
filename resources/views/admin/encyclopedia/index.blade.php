@@ -1,6 +1,9 @@
 @extends('layouts.admin')
 @section('title', 'Encyclopedia')
 @section('content')
+    @if($migrationPending ?? false)
+        <div class="alert-error" role="alert">The encyclopedia database update is waiting to run. Ask your hosting administrator to run <code>php artisan migrate --force</code> in the project directory, then refresh this page.</div>
+    @else
     <div class="panel-head standalone">
         <p class="lead">Manage the public encyclopedia topics and the entries readers find inside them.</p>
         <a href="{{ route('admin.encyclopedia.topics.new') }}" class="primary-button small">+ NEW TOPIC</a>
@@ -27,4 +30,5 @@
             </tbody>
         </table>
     </div>
+    @endif
 @endsection

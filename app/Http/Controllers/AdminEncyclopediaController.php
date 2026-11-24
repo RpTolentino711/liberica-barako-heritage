@@ -7,6 +7,7 @@ use App\Models\EncyclopediaTopic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -20,8 +21,12 @@ class AdminEncyclopediaController extends Controller
     public function index()
     {
         $this->guard();
+        if (!Schema::hasTable('encyclopedia_topics') || !Schema::hasTable('encyclopedia_entries')) {
+            return view('admin.encyclopedia.index', ['topics' => collect(), 'migrationPending' => true]);
+        }
         return view('admin.encyclopedia.index', [
             'topics' => EncyclopediaTopic::withCount('entries')->orderBy('sort_order')->orderBy('id')->get(),
+            'migrationPending' => false,
         ]);
     }
 

@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/',[HomeController::class,'index'])->name('home');
 Route::get('/encyclopedia', [EncyclopediaController::class, 'index'])->name('encyclopedia.index');
-Route::get('/encyclopedia/{topic:slug}/{entry:slug}', [EncyclopediaController::class, 'entry'])->scopeBindings()->name('encyclopedia.entry');
-Route::get('/encyclopedia/{topic:slug}', [EncyclopediaController::class, 'topic'])->name('encyclopedia.topic');
+Route::get('/encyclopedia/{topicSlug}/{entrySlug}', [EncyclopediaController::class, 'entry'])->name('encyclopedia.entry');
+Route::get('/encyclopedia/{topicSlug}', [EncyclopediaController::class, 'topic'])->name('encyclopedia.topic');
 Route::post('/contact',[HomeController::class,'message'])->middleware('throttle:6,1')->name('contact.store');
 Route::get('/admin/login',[AdminController::class,'login'])->name('admin.login');
 Route::post('/admin/login',[AdminController::class,'authenticate'])->middleware('throttle:5,1')->name('admin.authenticate');
