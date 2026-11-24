@@ -18,11 +18,11 @@ class EncyclopediaSectionParser
             }
 
             $source = [];
-            if (preg_match('/^@@ENCYCLOPEDIA_SOURCE:([A-Za-z0-9+\/=]+)@@\s*(?:\r?\n|$)/m', $chunk, $sourceMatch)) {
+            if (preg_match('/^@{2,}ENCYCLOPEDIA_SOURCE:([A-Za-z0-9+\/=]+)@{2,}\s*(?:\r?\n|$)/m', $chunk, $sourceMatch)) {
                 $decoded = base64_decode($sourceMatch[1], true);
                 $source = is_string($decoded) ? json_decode($decoded, true) : [];
                 $source = is_array($source) ? $source : [];
-                $chunk = preg_replace('/^@@ENCYCLOPEDIA_SOURCE:[A-Za-z0-9+\/=]+@@\s*(?:\r?\n|$)/m', '', $chunk, 1) ?? $chunk;
+                $chunk = preg_replace('/^@{2,}ENCYCLOPEDIA_SOURCE:[A-Za-z0-9+\/=]+@{2,}\s*(?:\r?\n|$)/m', '', $chunk, 1) ?? $chunk;
             }
 
             $urlValue = $source['url'] ?? '';
