@@ -14,6 +14,11 @@ class EncyclopediaEntry extends Model
         return ['is_published' => 'boolean'];
     }
 
+    public function references(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(EncyclopediaReference::class, 'entry_id')->orderBy('position')->orderBy('id');
+    }
+
     public function topic(): BelongsTo
     {
         return $this->belongsTo(EncyclopediaTopic::class, 'topic_id');

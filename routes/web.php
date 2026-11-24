@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/',[HomeController::class,'index'])->name('home');
 Route::get('/encyclopedia', [EncyclopediaController::class, 'index'])->name('encyclopedia.index');
+Route::get('/encyclopedia/references/{reference}/document.pdf', [EncyclopediaController::class, 'pdf'])
+    ->whereNumber('reference')->name('encyclopedia.reference.pdf');
 Route::get('/encyclopedia/{topicSlug}/{entrySlug}', [EncyclopediaController::class, 'entry'])->name('encyclopedia.entry');
 Route::get('/encyclopedia/{topicSlug}', [EncyclopediaController::class, 'topic'])->name('encyclopedia.topic');
 Route::post('/contact',[HomeController::class,'message'])->middleware('throttle:6,1')->name('contact.store');

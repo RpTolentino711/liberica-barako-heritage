@@ -42,6 +42,21 @@ a {
 
 }
 
+#entry-references, #entry-references fieldset {
+    min-width: 0;
+    margin: 1rem 0;
+    padding: 1rem;
+    border: 1px solid currentColor;
+    border-color: rgba(118, 93, 67, .3);
+}
+#entry-references [hidden] {
+    display: none;
+}
+#entry-references label {
+    display: block;
+    margin-bottom: .75rem;
+}
+
 button,input,textarea,select {
 
     font:inherit;

@@ -4,10 +4,10 @@
 <article class="encyclopedia-article">
     <header class="encyclopedia-article-header">
         <a class="encyclopedia-article-back" href="{{ route('encyclopedia.topic', $topic->slug) }}"><span aria-hidden="true">&#8592;</span> {{ $topic->name }}</a>
-        <p class="eyebrow">BATANGAS COFFEE ENCYCLOPEDIA <span aria-hidden="true">/</span> {{ $topic->name }}</p>
+        <p class="eyebrow">LIBERICAPEDIA <span aria-hidden="true">/</span> {{ $topic->name }}</p>
         <h1>{{ $entry->title }}</h1>
         <p class="encyclopedia-article-deck">{{ $entry->summary }}</p>
-        <div class="encyclopedia-article-byline"><span class="byline-mark" aria-hidden="true">L</span><span>LIBÉRICA <small>HERITAGE ENCYCLOPEDIA</small></span><span class="byline-divider" aria-hidden="true"></span><span>{{ $topic->name }}</span></div>
+        <div class="encyclopedia-article-byline"><span class="byline-mark" aria-hidden="true">L</span><span>LIBÉRICA <small>LIBERICAPEDIA</small></span><span class="byline-divider" aria-hidden="true"></span><span>{{ $topic->name }}</span></div>
     </header>
 
     @if($entry->image_path)
@@ -18,7 +18,7 @@
 
     <div class="encyclopedia-article-layout">
         <aside class="encyclopedia-article-aside">
-            <span class="section-number">EXPLORE THE ENCYCLOPEDIA</span>
+            <span class="section-number">EXPLORE LIBERICAPEDIA</span>
             <a href="{{ route('encyclopedia.topic', $topic->slug) }}" class="aside-topic">{{ $topic->name }} <span aria-hidden="true">&#8599;</span></a>
             <a href="{{ route('encyclopedia.index') }}" class="aside-all">Browse all topics</a>
         </aside>
@@ -49,6 +49,16 @@
                     <span class="section-number">ARTICLE SOURCE / FURTHER READING</span>
                     <a href="{{ $entry->source_url }}" target="_blank" rel="noopener noreferrer">{{ $entry->source_label }} <span aria-hidden="true">&#8599;</span></a>
                 </aside>
+            @endif
+            @if($entry->references->isNotEmpty())
+                <section aria-labelledby="article-references">
+                    <h2 id="article-references">References</h2>
+                    <ul>
+                        @foreach($entry->references as $reference)
+                            <li><a href="{{ $reference->pdf_path ? route('encyclopedia.reference.pdf', $reference) : $reference->url }}">{{ $reference->title }}{{ $reference->pdf_path ? ' (PDF)' : '' }}</a></li>
+                        @endforeach
+                    </ul>
+                </section>
             @endif
         </div>
     </div>

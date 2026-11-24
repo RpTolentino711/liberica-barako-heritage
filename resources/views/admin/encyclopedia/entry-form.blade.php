@@ -23,6 +23,7 @@
                 <div><label for="source_label">Source name</label><input id="source_label" name="source_label" maxlength="240" value="{{ old('source_label', $entry?->source_label) }}" placeholder="Department of Agriculture"></div>
                 <div><label for="source_url">Source link (HTTPS)</label><input id="source_url" type="url" name="source_url" maxlength="2048" value="{{ old('source_url', $entry?->source_url) }}" placeholder="https://"></div>
             </div>
+            @include('admin.encyclopedia.references')
             <label for="image">Optional image (JPG, PNG, WebP; max 4 MB)</label>
             <input id="image" type="file" name="image" accept="image/jpeg,image/png,image/webp">
             @if($entry?->image_path)
@@ -109,6 +110,8 @@
             let sectionPendingRemoval = null;
             let pendingNavigationUrl = null;
             const markUnsaved = () => { hasUnsavedChanges = true; };
+            document.getElementById('entry-references').addEventListener('change', markUnsaved);
+            document.getElementById('entry-references').addEventListener('input', markUnsaved);
             const removeSectionDialog = document.getElementById('removeEncyclopediaSectionDialog');
             const cancelRemoveSection = document.getElementById('cancelRemoveEncyclopediaSection');
             const confirmRemoveSection = document.getElementById('confirmRemoveEncyclopediaSection');

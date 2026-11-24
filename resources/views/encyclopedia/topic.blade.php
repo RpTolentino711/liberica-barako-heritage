@@ -2,13 +2,13 @@
 
 @section('content')
 <section class="encyclopedia-hero">
-    <a class="encyclopedia-back-link" href="{{ route('encyclopedia.index') }}">← ALL ENCYCLOPEDIA TOPICS</a>
-    <p class="eyebrow gold">BATANGAS COFFEE ENCYCLOPEDIA</p>
+    <a class="encyclopedia-back-link" href="{{ route('encyclopedia.index') }}">← ALL LIBERICAPEDIA TOPICS</a>
+    <p class="eyebrow gold">LIBERICAPEDIA</p>
     <h1>{{ $topic->name }}</h1>
     @if($topic->description)<p class="encyclopedia-lead">{{ $topic->description }}</p>@endif
 </section>
 <section class="encyclopedia-topic-content section-shell">
-    <div class="encyclopedia-topic-tabs" aria-label="Encyclopedia topics">
+    <div class="encyclopedia-topic-tabs" aria-label="Libericapedia topics">
         @foreach($navTopics as $navTopic)
             <a href="{{ route('encyclopedia.topic', $navTopic->slug) }}" @if($navTopic->id === $topic->id) aria-current="page" @endif>{{ $navTopic->name }}</a>
         @endforeach

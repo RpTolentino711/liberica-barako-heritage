@@ -74,7 +74,11 @@
 
     <div class="discover-visual" role="img" aria-label="Close-up of roasted coffee beans"></div>
 
-    <div class="discover-content"><div class="section-number">02 / GET TO KNOW THE BEAN</div><div class="eyebrow gold">MORE THAN JUST STRONG COFFEE</div><h2>Meet the <em>remarkable Liberica.</em></h2><p><i>Coffea liberica</i> is one of the world's coffee species, known for its substantial trees, comparatively large leaves and beans, and an expressive cup character.</p><p>In the Philippines it is closely associated with <strong>Kapeng Barako</strong>. Roasting, cultivation, processing, and brewing shape each cup—so flavor should never be treated as a single fixed promise.</p><div class="fact-row"><div><strong>01</strong><span>Distinct botanical species</span></div><div><strong>02</strong><span>Linked to Barako tradition</span></div><div><strong>03</strong><span>A complex coffee identity</span></div></div></div>
+    <div class="discover-content"><div class="section-number">02 / GET TO KNOW THE BEAN</div><div class="eyebrow gold">MORE THAN JUST STRONG COFFEE</div><h2>Meet the <em>remarkable Liberica.</em></h2><p><i>Coffea liberica</i> is one of the world's coffee species, known for its substantial trees, comparatively large leaves and beans, and an expressive cup character.</p><p>In the Philippines it is closely associated with <strong>Kapeng Barako</strong>. Roasting, cultivation, processing, and brewing shape each cup—so flavor should never be treated as a single fixed promise.</p><div class="fact-row"><div><strong>01</strong><span>Distinct botanical species</span></div><div><strong>02</strong><span>Linked to Barako tradition</span></div><div><strong>03</strong><span>A complex coffee identity</span></div></div>
+        @if($featuredEntry)
+            <a class="text-link" href="{{ route('encyclopedia.entry', [$featuredEntry->topic->slug, $featuredEntry->slug]) }}">Read about {{ $featuredEntry->title }} <span aria-hidden="true">&#8594;</span></a>
+        @endif
+    </div>
 
 </section>
 

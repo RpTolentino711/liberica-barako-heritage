@@ -10,9 +10,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="{{ asset('assets/coffee_Liberica_bean.png') }}">
-    <link rel="stylesheet" href="{{ asset('css/landing.css') }}?v=bean-to-cup-carousel-11">
+    <link rel="stylesheet" href="{{ asset('css/landing.css') }}?v=encyclopedia-menu-5">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-    <script defer src="{{ asset('js/landing.js') }}"></script>
+    <script defer src="{{ asset('js/landing.js') }}?v=encyclopedia-menu-2"></script>
     <script defer src="{{ asset('js/bean-to-cup.js') }}?v=3"></script>
     <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script defer src="{{ asset('js/heritage-farm-map.js') }}?v=1"></script>
@@ -30,7 +30,7 @@
             <a href="{{ route('home') }}#journey">Bean to Cup</a>
             <a href="{{ route('home') }}#culture">Coffee Culture</a>
             <details class="nav-dropdown">
-                <summary>Encyclopedia</summary>
+                <summary>Libericapedia</summary>
                 <div class="nav-dropdown-menu">
                     <a href="{{ route('encyclopedia.index') }}">All topics</a>
                     @foreach(($navTopics ?? $topics ?? collect()) as $topic)
@@ -47,7 +47,7 @@
     </header>
     <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation" hidden>
         <a href="{{ route('home') }}#heritage">Our Heritage</a><a href="{{ route('home') }}#discover">Discover Liberica</a><a href="{{ route('home') }}#journey">Bean to Cup</a><a href="{{ route('home') }}#culture">Coffee Culture</a>
-        <details class="mobile-encyclopedia-menu"><summary>Encyclopedia</summary>
+        <details class="mobile-encyclopedia-menu"><summary>Libericapedia</summary>
             <a href="{{ route('encyclopedia.index') }}">All topics</a>
             @foreach(($navTopics ?? $topics ?? collect()) as $topic)
                 <a href="{{ route('encyclopedia.topic', $topic->slug) }}">{{ $topic->name }}</a>
