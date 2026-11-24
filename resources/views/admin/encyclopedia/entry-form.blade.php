@@ -78,8 +78,8 @@
                         sourceLabel = '';
                         sourceUrl = '';
                         hasHeading = true;
-                    } else if (trimmedLine.includes('ENCYCLOPEDIA_SOURCE:')) {
-                        const marker = trimmedLine.match(/^@{2,}ENCYCLOPEDIA_SOURCE:([A-Za-z0-9+/=]+)@{2,}$/);
+                    } else if (/^@+ENCYCLOPEDIA_SOURCE:/.test(trimmedLine)) {
+                        const marker = trimmedLine.match(/^@+ENCYCLOPEDIA_SOURCE:([A-Za-z0-9+/=]+)@+$/);
                         if (marker) {
                             try {
                                 const binary = atob(marker[1]);
@@ -87,11 +87,8 @@
                                 const source = JSON.parse(new TextDecoder().decode(bytes));
                                 sourceLabel = source.label || '';
                                 sourceUrl = source.url || '';
-                            } catch (_) {
-                                content.push(line);
-                            }
-                        } else {
-                            content.push(line);
+                                if (/^https?:\/\/(?:www\.)?google\.com\/search\?/i.test(sourceUrl)) sourceUrl = '';
+                            } catch (_) {}
                         }
                     } else {
                         content.push(line);
@@ -112,7 +109,11 @@
             const syncBody = () => {
                 const values = [...editor.querySelectorAll('.encyclopedia-content-section')].map((section) => {
                     const heading = section.querySelector('[data-section-heading]').value.trim();
-                    const content = section.querySelector('[data-section-content]').value.trim();
+                    const content = section.querySelector('[data-section-content]').value
+                        .split(/\r?\n/)
+                        .filter((line) => !/^@+ENCYCLOPEDIA_SOURCE:/.test(line.trim()))
+                        .join('\n')
+                        .trim();
                     const sourceLabel = section.querySelector('[data-section-source-label]')?.value.trim() || '';
                     const sourceUrl = section.querySelector('[data-section-source-url]')?.value.trim() || '';
                     if (!heading && !content && !sourceLabel && !sourceUrl) return '';
@@ -168,6 +169,7 @@
                     sourceLabelInput.type = 'text';
                     sourceLabelInput.maxLength = 240;
                     sourceLabelInput.placeholder = 'For example: City Government of Lipa';
+                    sourceLabelInput.autocomplete = 'off';
                     sourceLabelInput.value = sourceLabel;
                     sourceLabelInput.dataset.sectionSourceLabel = '';
                     sourceLabelField.append(sourceLabelInput);
@@ -178,6 +180,7 @@
                     sourceUrlInput.type = 'url';
                     sourceUrlInput.maxLength = 2048;
                     sourceUrlInput.placeholder = 'https://';
+                    sourceUrlInput.autocomplete = 'off';
                     sourceUrlInput.value = sourceUrl;
                     sourceUrlInput.dataset.sectionSourceUrl = '';
                     sourceUrlField.append(sourceUrlInput);
