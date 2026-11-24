@@ -20,7 +20,6 @@
                     <td>{{ $topic->sort_order }}</td>
                     <td class="actions encyclopedia-admin-actions">
                         <a class="encyclopedia-action-manage" href="{{ route('admin.encyclopedia.entries', $topic) }}">Manage {{ $topic->entries_count }} {{ \Illuminate\Support\Str::plural('entry', $topic->entries_count) }}</a>
-                        <a href="{{ route('admin.encyclopedia.topics.edit', $topic) }}">Edit topic</a>
                         <button type="button" class="danger-button" data-confirm-delete data-delete-action="{{ route('admin.encyclopedia.topics.delete', $topic) }}" data-delete-title="Delete {{ $topic->name }}?" data-delete-description="This will permanently delete this topic and all {{ $topic->entries_count }} entries inside it.">Delete</button>
                     </td>
                 </tr>
