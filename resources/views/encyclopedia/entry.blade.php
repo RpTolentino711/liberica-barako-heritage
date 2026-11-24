@@ -3,7 +3,7 @@
 @section('content')
 <article class="encyclopedia-article">
     <header class="encyclopedia-article-header">
-        <a class="encyclopedia-article-back" href="{{ route('encyclopedia.topic', $topic->slug) }}"><span aria-hidden="true">←</span> {{ $topic->name }}</a>
+        <a class="encyclopedia-article-back" href="{{ route('encyclopedia.topic', $topic->slug) }}"><span aria-hidden="true">&#8592;</span> {{ $topic->name }}</a>
         <p class="eyebrow">BATANGAS COFFEE ENCYCLOPEDIA <span aria-hidden="true">/</span> {{ $topic->name }}</p>
         <h1>{{ $entry->title }}</h1>
         <p class="encyclopedia-article-deck">{{ $entry->summary }}</p>
@@ -19,18 +19,16 @@
     <div class="encyclopedia-article-layout">
         <aside class="encyclopedia-article-aside">
             <span class="section-number">EXPLORE THE ENCYCLOPEDIA</span>
-            <a href="{{ route('encyclopedia.topic', $topic->slug) }}" class="aside-topic">{{ $topic->name }} <span aria-hidden="true">↗</span></a>
+            <a href="{{ route('encyclopedia.topic', $topic->slug) }}" class="aside-topic">{{ $topic->name }} <span aria-hidden="true">&#8599;</span></a>
             <a href="{{ route('encyclopedia.index') }}" class="aside-all">Browse all topics</a>
-            @if($entry->source_url && $entry->source_label)
-                <aside class="encyclopedia-source-card" aria-label="Sources used in this article">
-                    <span class="section-number">SOURCE USED / FURTHER READING</span>
-                    <p>This reference was used to support the information in this article.</p>
-                    <a href="{{ $entry->source_url }}" target="_blank" rel="noopener noreferrer">{{ $entry->source_label }} <span aria-hidden="true">↗</span></a>
-                </aside>
-            @endif
         </aside>
         <div class="encyclopedia-reading-body">
-            @foreach(\App\Support\EncyclopediaSectionParser::parse($entry->body) as $section)
+            @php($articleSections = \App\Support\EncyclopediaSectionParser::parse($entry->body))
+            @php($entrySourceAlreadyShown = false)
+            @foreach($articleSections as $section)
+                @if($entry->source_url && $section['source_url'] === $entry->source_url)
+                    @php($entrySourceAlreadyShown = true)
+                @endif
                 @if($section['heading'])<h2>{{ $section['heading'] }}</h2>@endif
                 @foreach($section['paragraphs'] as $paragraph)
                     <p>{{ trim($paragraph) }}</p>
@@ -39,13 +37,19 @@
                     <aside class="encyclopedia-section-source" aria-label="Section source">
                         <span class="section-number">SECTION SOURCE</span>
                         @if($section['source_url'])
-                            <a href="{{ $section['source_url'] }}" target="_blank" rel="noopener noreferrer">{{ $section['source_label'] ?: $section['source_url'] }} <span aria-hidden="true">↗</span></a>
+                            <a href="{{ $section['source_url'] }}" target="_blank" rel="noopener noreferrer">{{ $section['source_label'] ?: $section['source_url'] }} <span aria-hidden="true">&#8599;</span></a>
                         @else
                             <span>{{ $section['source_label'] }}</span>
                         @endif
                     </aside>
                 @endif
             @endforeach
+            @if($entry->source_url && $entry->source_label && !$entrySourceAlreadyShown)
+                <aside class="encyclopedia-section-source" aria-label="Article source">
+                    <span class="section-number">ARTICLE SOURCE / FURTHER READING</span>
+                    <a href="{{ $entry->source_url }}" target="_blank" rel="noopener noreferrer">{{ $entry->source_label }} <span aria-hidden="true">&#8599;</span></a>
+                </aside>
+            @endif
         </div>
     </div>
 </article>
