@@ -14,7 +14,7 @@
             <tbody>
             @forelse($topics as $topic)
                 <tr>
-                    <td><strong>{{ $topic->name }}</strong><small>{{ $topic->slug }}</small></td>
+                    <td><strong><a class="encyclopedia-topic-title-link" href="{{ route('admin.encyclopedia.topics.edit', $topic) }}">{{ $topic->name }}</a></strong><small>{{ $topic->slug }}</small></td>
                     <td><a class="encyclopedia-entry-count" href="{{ route('admin.encyclopedia.entries', $topic) }}">{{ $topic->entries_count }} <span>VIEW</span></a></td>
                     <td><span class="status">{{ $topic->is_published ? 'Published' : 'Draft' }}</span></td>
                     <td>{{ $topic->sort_order }}</td>

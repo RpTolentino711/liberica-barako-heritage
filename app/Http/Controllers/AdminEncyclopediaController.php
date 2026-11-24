@@ -39,7 +39,8 @@ class AdminEncyclopediaController extends Controller
     public function editTopic(EncyclopediaTopic $topic)
     {
         $this->guard();
-        return view('admin.encyclopedia.topic-form', compact('topic'));
+        $entries = $topic->entries()->orderBy('sort_order')->orderBy('id')->get();
+        return view('admin.encyclopedia.topic-form', compact('topic', 'entries'));
     }
 
     public function saveTopic(Request $request, ?EncyclopediaTopic $topic = null)
@@ -56,9 +57,12 @@ class AdminEncyclopediaController extends Controller
         $data['sort_order'] = $data['sort_order'] ?? 0;
         $data['is_published'] = $request->boolean('is_published');
 
-        if ($topic) $topic->update($data);
-        else EncyclopediaTopic::create($data);
+        if ($topic) {
+            $topic->update($data);
+            return redirect()->route('admin.encyclopedia.topics.edit', $topic)->with('ok', 'Encyclopedia topic saved.');
+        }
 
+        EncyclopediaTopic::create($data);
         return redirect()->route('admin.encyclopedia')->with('ok', 'Encyclopedia topic saved.');
     }
 
