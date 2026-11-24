@@ -67,7 +67,7 @@ class AdminEncyclopediaController extends Controller
         $this->guard();
         $images = $topic->entries()->whereNotNull('image_path')->pluck('image_path')->all();
         $topic->delete();
-        Storage::disk('public')->delete($images);
+        Storage::disk('public')->delete(array_values(array_filter($images, fn ($path) => !str_starts_with($path, 'assets/'))));
 
         return back()->with('ok', 'Topic and its entries deleted.');
     }
@@ -106,6 +106,7 @@ class AdminEncyclopediaController extends Controller
             'summary' => ['required', 'string', 'max:500'],
             'body' => ['required', 'string', 'max:30000'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'remove_image' => ['nullable', 'boolean'],
             'source_label' => ['nullable', 'string', 'max:240'],
             'source_url' => ['nullable', 'url:http,https', 'max:2048'],
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
@@ -116,13 +117,19 @@ class AdminEncyclopediaController extends Controller
         $data['topic_id'] = $topic->id;
         $data['sort_order'] = $data['sort_order'] ?? 0;
         $data['is_published'] = $request->boolean('is_published');
-        if ($request->hasFile('image')) $data['image_path'] = $request->file('image')->store('encyclopedia', 'public');
-        unset($data['image']);
-
         $oldImage = $entry?->image_path;
+        if ($request->hasFile('image')) {
+            $data['image_path'] = $request->file('image')->store('encyclopedia', 'public');
+        } elseif ($request->boolean('remove_image') && $entry) {
+            $data['image_path'] = null;
+        }
+        unset($data['image'], $data['remove_image']);
+
         if ($entry) $entry->update($data);
         else $topic->entries()->create($data);
-        if ($oldImage && isset($data['image_path'])) Storage::disk('public')->delete($oldImage);
+        if ($oldImage && array_key_exists('image_path', $data) && !str_starts_with($oldImage, 'assets/')) {
+            Storage::disk('public')->delete($oldImage);
+        }
 
         return redirect()->route('admin.encyclopedia.entries', $topic)->with('ok', 'Encyclopedia entry saved.');
     }
@@ -133,7 +140,7 @@ class AdminEncyclopediaController extends Controller
         abort_unless($entry->topic_id === $topic->id, 404);
         $image = $entry->image_path;
         $entry->delete();
-        if ($image) Storage::disk('public')->delete($image);
+        if ($image && !str_starts_with($image, 'assets/')) Storage::disk('public')->delete($image);
 
         return back()->with('ok', 'Encyclopedia entry deleted.');
     }

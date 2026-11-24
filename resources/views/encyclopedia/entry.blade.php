@@ -6,7 +6,7 @@
     <p class="eyebrow gold">BATANGAS COFFEE ENCYCLOPEDIA</p>
     <h1>{{ $entry->title }}</h1>
     <p class="encyclopedia-lead">{{ $entry->summary }}</p>
-    @if($entry->image_path)<img class="encyclopedia-reading-image" src="{{ asset('storage/'.$entry->image_path) }}" alt="{{ $entry->title }}">@endif
+    @if($entry->image_path)<img class="encyclopedia-reading-image" src="{{ str_starts_with($entry->image_path, 'assets/') ? asset($entry->image_path) : asset('storage/'.$entry->image_path) }}" alt="" loading="lazy">@endif
     <div class="encyclopedia-reading-body">
         @foreach(preg_split('/\R\s*\R/', trim($entry->body), -1, PREG_SPLIT_NO_EMPTY) as $paragraph)
             <p>{{ trim($paragraph) }}</p>

@@ -19,7 +19,10 @@
             </div>
             <label for="image">Optional image (JPG, PNG, WebP; max 4 MB)</label>
             <input id="image" type="file" name="image" accept="image/jpeg,image/png,image/webp">
-            @if($entry?->image_path)<img class="image-preview" src="{{ asset('storage/'.$entry->image_path) }}" alt="Current entry image">@endif
+            @if($entry?->image_path)
+                <img class="image-preview" src="{{ str_starts_with($entry->image_path, 'assets/') ? asset($entry->image_path) : asset('storage/'.$entry->image_path) }}" alt="Current entry image">
+                <label class="check"><input name="remove_image" type="checkbox" value="1"> Remove current image</label>
+            @endif
             <label for="sort_order">Display order</label>
             <input id="sort_order" type="number" name="sort_order" min="0" max="9999" value="{{ old('sort_order', $entry?->sort_order ?? 0) }}">
             <label class="check"><input name="is_published" type="checkbox" value="1" @checked(old('is_published', $entry?->is_published ?? false))> Publish this entry</label>

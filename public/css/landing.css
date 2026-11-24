@@ -2945,7 +2945,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible 
 .encyclopedia-topic-tabs a[aria-current="page"] { border-color: #8f5e37; background: #8f5e37; color: #fffaf3; }
 .encyclopedia-entry-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
 .encyclopedia-entry-card { min-height: 300px; }
-.encyclopedia-entry-card img { width: calc(100% + 60px); max-width: none; height: 220px; margin: -30px -30px 24px; object-fit: cover; }
+.encyclopedia-entry-card img { width: calc(100% + 60px); max-width: none; height: 230px; margin: -30px -30px 24px; object-fit: cover; background: #e9ddcd; }
 .encyclopedia-reading { max-width: 900px; margin: 0 auto; padding: 72px 7% 110px; }
 .encyclopedia-reading h1 { font-size: clamp(38px, 6vw, 68px); color: #281b14; }
 .encyclopedia-reading .eyebrow { margin-bottom: 17px; }
