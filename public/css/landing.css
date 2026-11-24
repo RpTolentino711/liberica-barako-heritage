@@ -3002,6 +3002,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible 
     .encyclopedia-article-deck { margin: 18px 0 25px; font-size: 15px; }
     .encyclopedia-article-figure { height: 280px; }
     .encyclopedia-article-layout { grid-template-columns: 1fr; gap: 25px; padding: 34px 24px 0; }
+    .encyclopedia-article-aside { grid-row: 2; }
+    .encyclopedia-reading-body { grid-row: 1; }
     .encyclopedia-article-aside { position: static; padding: 16px 0; }
     .encyclopedia-reading-body { font-size: 16px; line-height: 1.85; text-align: left; }
     .encyclopedia-reading-body p:first-child::first-letter { font-size: 56px; }
