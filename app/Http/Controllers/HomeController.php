@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 
 class HomeController extends Controller {
     public function index() {
-        $featuredEntry = Schema::hasColumn('encyclopedia_entries', 'featured_in_discover')
+        $featuredEntry = (Schema::hasTable('encyclopedia_entries') && Schema::hasColumn('encyclopedia_entries', 'featured_in_discover'))
             ? \App\Models\EncyclopediaEntry::with('topic')->where('featured_in_discover', true)
                 ->where('is_published', true)->whereHas('topic', fn ($query) => $query->where('is_published', true))->first()
             : null;

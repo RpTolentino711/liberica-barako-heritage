@@ -82,6 +82,17 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
             return back()->withErrors(['storage' => 'Could not link storage: ' . $e->getMessage()]);
         }
     })->name('storage.link');
+    Route::get('/migrate', function () {
+        try {
+            \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+            $output = \Illuminate\Support\Facades\Artisan::output();
+            return response('<pre style="background:#1e1b18;color:#d4af37;padding:24px;border-radius:8px;font-family:monospace;font-size:14px;line-height:1.6;">' . 
+                e($output ?: 'All migrations are already up to date.') . 
+                "\n\n✓ Migrations executed successfully!</pre><br><a href=\"/admin\" style=\"display:inline-block;padding:10px 18px;background:#d4af37;color:#1e1b18;font-weight:bold;text-decoration:none;border-radius:4px;\">← Back to Admin Dashboard</a>");
+        } catch (\Throwable $e) {
+            return response('<pre style="background:#1e1b18;color:#ff6b6b;padding:24px;border-radius:8px;font-family:monospace;">Migration Error: ' . e($e->getMessage()) . '</pre>', 500);
+        }
+    })->name('migrate');
 });
 
 Route::get('/check-storage', function () {
