@@ -34,6 +34,20 @@
             <div class="form-actions"><button class="primary-button" type="submit">SAVE ENTRY</button><a class="button-alt" href="{{ route('admin.encyclopedia.entries', $topic) }}">CANCEL</a></div>
         </form>
     </div>
+    @if($entry?->image_path)
+        <dialog id="removeEntryImageDialog" class="delete-confirm-dialog" aria-labelledby="removeEntryImageTitle" aria-describedby="removeEntryImageDescription">
+            <div class="delete-confirm-content">
+                <div class="logout-warning-icon" aria-hidden="true">!</div>
+                <p class="logout-dialog-eyebrow">PLEASE CONFIRM</p>
+                <h2 id="removeEntryImageTitle">Remove this image?</h2>
+                <p id="removeEntryImageDescription">The image will be removed when you save this entry. You can choose a replacement image before saving.</p>
+                <div class="logout-dialog-actions">
+                    <button type="button" class="logout-cancel" id="cancelRemoveEntryImage">CANCEL</button>
+                    <button type="button" class="delete-confirm-button" id="confirmRemoveEntryImage">YES, REMOVE IMAGE</button>
+                </div>
+            </div>
+        </dialog>
+    @endif
     <script>
         (() => {
             const editor = document.getElementById('encyclopediaSections');
@@ -195,6 +209,31 @@
                 event.preventDefault();
                 event.returnValue = '';
             });
+
+            const removeImageCheckbox = fallback.form?.querySelector('[name="remove_image"]');
+            const removeImageDialog = document.getElementById('removeEntryImageDialog');
+            const cancelRemoveImage = document.getElementById('cancelRemoveEntryImage');
+            const confirmRemoveImage = document.getElementById('confirmRemoveEntryImage');
+            if (removeImageCheckbox && removeImageDialog) {
+                removeImageCheckbox.addEventListener('change', () => {
+                    if (!removeImageCheckbox.checked) return;
+                    removeImageCheckbox.checked = false;
+                    if (typeof removeImageDialog.showModal === 'function') removeImageDialog.showModal();
+                    else if (window.confirm('Remove the current image when you save this entry?')) {
+                        removeImageCheckbox.checked = true;
+                        markUnsaved();
+                    }
+                });
+                cancelRemoveImage?.addEventListener('click', () => removeImageDialog.close());
+                confirmRemoveImage?.addEventListener('click', () => {
+                    removeImageCheckbox.checked = true;
+                    markUnsaved();
+                    removeImageDialog.close();
+                });
+                removeImageDialog.addEventListener('click', (event) => {
+                    if (event.target === removeImageDialog) removeImageDialog.close();
+                });
+            }
         })();
     </script>
 @endsection
