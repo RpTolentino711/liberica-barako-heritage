@@ -330,52 +330,61 @@
         </div>
     </div>
 
+    @php
+        $mapLocations = $farmLocations->map(function ($location) {
+            $photoUrl = $location->photo_path
+                ? (str_starts_with($location->photo_path, 'assets/') ? asset($location->photo_path) : asset('storage/'.$location->photo_path))
+                : null;
+            return [
+                'id' => $location->id,
+                'name' => $location->name,
+                'place' => $location->place_name,
+                'description' => $location->description,
+                'latitude' => (float) $location->latitude,
+                'longitude' => (float) $location->longitude,
+                'photo' => $photoUrl,
+                'photo_alt' => $location->photo_alt ?: $location->name,
+                'maps' => 'https://www.google.com/maps/search/?api=1&query='.$location->latitude.','.$location->longitude,
+            ];
+        });
+        $mapLocationsJson = base64_encode(json_encode($mapLocations, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+    @endphp
     <div class="farm-map-layout">
         <div class="farm-map-panel">
             <div class="farm-map-panel-head">
                 <span><span class="farm-map-status-dot" aria-hidden="true"></span> BATANGAS · PHILIPPINES</span>
-                <span>02 DOCUMENTED LOCATIONS</span>
+                <span>{{ str_pad($farmLocations->count(), 2, '0', STR_PAD_LEFT) }} DOCUMENTED {{ \Illuminate\Support\Str::plural('LOCATION', $farmLocations->count()) }}</span>
             </div>
             <div class="farm-map-interactive">
-                <div id="liberica-farm-map" class="farm-map-canvas" role="region" aria-label="Interactive map of documented Barako cultivation areas in Batangas"></div>
-                <div id="farm-map-fallback" class="farm-map-fallback" hidden>Interactive map unavailable. Location information and external map links remain available in the adjacent cards.</div>
+                <div id="liberica-farm-map" class="farm-map-canvas" data-locations="{{ $mapLocationsJson }}" role="region" aria-label="Interactive map of documented Barako locations in Batangas"></div>
+                <div id="farm-map-fallback" class="farm-map-fallback" hidden>Interactive map unavailable. Location information and map links remain available in the adjacent cards.</div>
             </div>
-            <div class="farm-map-attribution">Pins show approximate barangay areas, <strong>not farm entrances</strong>. Map data © OpenStreetMap contributors.</div>
+            <div class="farm-map-attribution">Map data © OpenStreetMap contributors. Location details and photos are provided by the site administrator.</div>
         </div>
 
         <div class="farm-location-list" aria-label="Documented coffee farms and educational sites">
-            <article class="farm-location-card">
-                <div class="farm-location-card-top">
-                    <span class="farm-location-number">01 / LIPA CITY</span>
-                    <span class="farm-location-type">CULTIVATION & NURSERY</span>
-                </div>
-                <h3>Katy’s Farm</h3>
-                <p class="farm-location-place">Tipakan, Lipa City, Batangas</p>
-                <p class="farm-location-description">Liberica cultivation and nursery activity documented in research from the University of the Philippines Los Baños.</p>
-                <p class="farm-location-caution">Area marker only. Visitor access has not been confirmed.</p>
-                <div class="farm-location-links">
-                    <a target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&amp;query=Katy%27s%20Farm%20Tipakan%20Lipa%20Batangas">VIEW LOCATION <span aria-hidden="true">↗</span></a>
-                    <a target="_blank" rel="noopener noreferrer" href="https://www.ukdr.uplb.edu.ph/etd-undergrad/5345/">RESEARCH SOURCE <span aria-hidden="true">↗</span></a>
-                </div>
-            </article>
-
-            <article class="farm-location-card">
-                <div class="farm-location-card-top">
-                    <span class="farm-location-number">02 / ROSARIO</span>
-                    <span class="farm-location-type">RESEARCH & DEMONSTRATION</span>
-                </div>
-                <h3>BARAKO Smart Demo Farm</h3>
-                <p class="farm-location-place">Masaya, Rosario, Batangas</p>
-                <p class="farm-location-description">Batangas State University's BARAKO initiative highlights agricultural demonstration and Liberica-related farm technology.</p>
-                <p class="farm-location-caution">Area marker only. Not confirmed as a public attraction.</p>
-                <div class="farm-location-links">
-                    <a target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&amp;query=BARAKO%20PROJECT%20SMART%20DEMO%20FARM%20Masaya%20Rosario%20Batangas">VIEW LOCATION <span aria-hidden="true">↗</span></a>
-                    <a target="_blank" rel="noopener noreferrer" href="https://sustainability.batstate-u.edu.ph/wp-content/uploads/2022/11/Barako-Progress-Report.pdf">PROJECT SOURCE <span aria-hidden="true">↗</span></a>
-                </div>
-            </article>
+            @forelse($farmLocations as $location)
+                @php($locationPhoto = $location->photo_path ? (str_starts_with($location->photo_path, 'assets/') ? asset($location->photo_path) : asset('storage/'.$location->photo_path)) : null)
+                <article class="farm-location-card" data-location-card="{{ $location->id }}">
+                    @if($locationPhoto)<img class="farm-location-photo" src="{{ $locationPhoto }}" alt="{{ $location->photo_alt ?: $location->name }}" loading="lazy">@endif
+                    <div class="farm-location-card-top">
+                        <span class="farm-location-number">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }} / BATANGAS</span>
+                        @if($location->location_type)<span class="farm-location-type">{{ $location->location_type }}</span>@endif
+                    </div>
+                    <h3>{{ $location->name }}</h3>
+                    <p class="farm-location-place">{{ $location->place_name }}</p>
+                    <p class="farm-location-description">{{ $location->description }}</p>
+                    <p class="farm-location-caution">Approximate map pin. Confirm access with the site before visiting.</p>
+                    <div class="farm-location-links">
+                        <a target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&amp;query={{ $location->latitude }},{{ $location->longitude }}">VIEW LOCATION <span aria-hidden="true">&#8599;</span></a>
+                        @if($location->source_url)<a target="_blank" rel="noopener noreferrer" href="{{ $location->source_url }}">RESEARCH SOURCE <span aria-hidden="true">&#8599;</span></a>@endif
+                    </div>
+                </article>
+            @empty
+                <p>No public map locations have been added yet.</p>
+            @endforelse
         </div>
-    </div>
-    <p class="farm-map-note"><strong>Location note:</strong> These markers are for educational orientation and should not be treated as turn-by-turn directions. Confirm permission before planning any farm visit.</p>
+    </div>    <p class="farm-map-note"><strong>Location note:</strong> These markers are for educational orientation and should not be treated as turn-by-turn directions. Confirm permission before planning any farm visit.</p>
 </section>
 
 

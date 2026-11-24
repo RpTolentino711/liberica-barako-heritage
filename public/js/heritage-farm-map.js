@@ -1,49 +1,102 @@
-/* LIBÉRICA Heritage — documented coffee areas on an accessible Leaflet map.
-   Coordinates are barangay centroids, NOT exact farm entrances.
-   Map requires an internet connection for Leaflet and OpenStreetMap tiles. */
+/* Interactive map pins and popups are populated from administrator-managed locations. */
 (function () {
     'use strict';
+
+    function decodeLocations(element) {
+        try {
+            const binary = atob(element.dataset.locations || '');
+            const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+            return JSON.parse(new TextDecoder().decode(bytes));
+        } catch (error) {
+            console.warn('Map location data could not be read:', error);
+            return [];
+        }
+    }
+
+    function popupContent(place) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'farm-map-popup';
+        if (place.photo) {
+            const image = document.createElement('img');
+            image.className = 'farm-map-popup-image';
+            image.src = place.photo;
+            image.alt = place.photo_alt || place.name;
+            image.loading = 'lazy';
+            wrapper.append(image);
+        }
+
+        const title = document.createElement('strong');
+        title.className = 'farm-map-popup-title';
+        title.textContent = place.name;
+        wrapper.append(title);
+
+        const address = document.createElement('p');
+        address.className = 'farm-map-popup-place';
+        address.textContent = place.place;
+        wrapper.append(address);
+
+        const description = document.createElement('p');
+        description.className = 'farm-map-popup-description';
+        description.textContent = place.description;
+        wrapper.append(description);
+
+        const mapsLink = document.createElement('a');
+        mapsLink.href = place.maps;
+        mapsLink.target = '_blank';
+        mapsLink.rel = 'noopener noreferrer';
+        mapsLink.textContent = 'View location in Google Maps ↗';
+        wrapper.append(mapsLink);
+        return wrapper;
+    }
+
     function initializeFarmMap() {
         const element = document.getElementById('liberica-farm-map');
         const fallback = document.getElementById('farm-map-fallback');
         if (!element) return;
         if (!window.L) { if (fallback) fallback.hidden = false; return; }
-        const places = [
-            {
-                name: 'Katy’s Farm — Tipakan area',
-                place: 'Tipakan, Lipa City, Batangas',
-                lat: 13.9146, lng: 121.20341,
-                maps: 'https://www.google.com/maps/search/?api=1&query=Katy%27s%20Farm%20Tipakan%20Lipa%20Batangas'
-            },
-            {
-                name: 'BARAKO Smart Demo Farm — Masaya area',
-                place: 'Masaya, Rosario, Batangas',
-                lat: 13.8383, lng: 121.1852,
-                maps: 'https://www.google.com/maps/search/?api=1&query=BARAKO%20PROJECT%20SMART%20DEMO%20FARM%20Masaya%20Rosario%20Batangas'
-            }
-        ];
+
+        const places = decodeLocations(element);
         try {
-            const map = L.map(element, { scrollWheelZoom: false });
+            const map = L.map(element, { scrollWheelZoom: false }).setView([13.9, 121.1], 9);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors',
-                maxZoom: 18
+                maxZoom: 19,
             }).addTo(map);
+
             const bounds = [];
-            places.forEach(function (place) {
-                const point = [place.lat, place.lng];
-                const safePopup = '<strong>' + place.name + '</strong><br>' + place.place +
-                    '<br><em>Approximate barangay marker — not the farm gate.</em><br>' +
-                    '<a target="_blank" rel="noopener noreferrer" href="' + place.maps + '">Find the listed site in Google Maps ↗</a>';
-                L.marker(point).addTo(map).bindPopup(safePopup);
+            const markers = new Map();
+            places.forEach((place) => {
+                const point = [Number(place.latitude), Number(place.longitude)];
+                if (!Number.isFinite(point[0]) || !Number.isFinite(point[1])) return;
+                const marker = L.marker(point).addTo(map).bindPopup(popupContent(place), { maxWidth: 280 });
+                marker.on('click', () => {
+                    document.querySelectorAll('.farm-location-card.is-selected').forEach((card) => card.classList.remove('is-selected'));
+                    document.querySelector(`[data-location-card="${Number(place.id)}"]`)?.classList.add('is-selected');
+                });
+                markers.set(Number(place.id), marker);
                 bounds.push(point);
             });
-            map.fitBounds(bounds, { padding: [50, 50], maxZoom: 11 });
-            window.addEventListener('resize', function () { map.invalidateSize(); });
+
+            if (bounds.length === 1) map.setView(bounds[0], 13);
+            else if (bounds.length > 1) map.fitBounds(bounds, { padding: [50, 50], maxZoom: 11 });
+
+            document.querySelectorAll('[data-location-card]').forEach((card) => {
+                card.addEventListener('click', (event) => {
+                    if (event.target.closest('a')) return;
+                    const marker = markers.get(Number(card.dataset.locationCard));
+                    if (!marker) return;
+                    map.setView(marker.getLatLng(), Math.max(map.getZoom(), 12));
+                    marker.openPopup();
+                });
+            });
+
+            window.addEventListener('resize', () => map.invalidateSize());
         } catch (error) {
             console.warn('Heritage farm map could not initialize:', error);
             if (fallback) fallback.hidden = false;
         }
     }
+
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initializeFarmMap);
     else initializeFarmMap();
 }());

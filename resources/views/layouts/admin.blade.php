@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="{{ asset('assets/coffee_Liberica_bean.png') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v=encyclopedia-references-1">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v=farm-location-admin-2">
 </head>
 <body class="admin-body">
     <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
@@ -28,6 +28,7 @@
             <a href="{{ route('admin.references') }}" class="{{ request()->routeIs('admin.references*') ? 'active' : '' }}">≡ &nbsp; References</a>
             <a href="{{ route('admin.messages') }}" class="{{ request()->routeIs('admin.messages*') ? 'active' : '' }}">✉ &nbsp; Visitor Messages</a>
             <a href="{{ route('admin.settings') }}" class="{{ request()->routeIs('admin.settings*') ? 'active' : '' }}">⚙ &nbsp; Site Settings</a>
+            <a href="{{ route('admin.farm-locations.index') }}" class="{{ request()->routeIs('admin.farm-locations*') ? 'active' : '' }}">&#8982; &nbsp; Farm Map Locations</a>
         </nav>
         <div class="sidebar-bottom">
             <a href="{{ route('home') }}" target="_blank" rel="noopener">VIEW PUBLIC WEBSITE ↗</a>

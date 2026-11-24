@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Models\{Article, EncyclopediaTopic, GalleryItem, JourneyStep, Reference, Message, Setting};
+use App\Models\{Article, EncyclopediaTopic, FarmLocation, GalleryItem, JourneyStep, Reference, Message, Setting};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 
@@ -19,6 +19,9 @@ class HomeController extends Controller {
             'settings' => Setting::pluck('value', 'key')->all(),
             'journeySteps' => Schema::hasTable('journey_steps')
                 ? JourneyStep::where('is_published', true)->orderBy('sort_order')->orderBy('id')->get()
+                : collect(),
+            'farmLocations' => Schema::hasTable('farm_locations')
+                ? FarmLocation::where('is_published', true)->orderBy('sort_order')->orderBy('id')->get()
                 : collect(),
             'topics' => Schema::hasTable('encyclopedia_topics')
                 ? EncyclopediaTopic::where('is_published', true)->orderBy('sort_order')->orderBy('id')->get()

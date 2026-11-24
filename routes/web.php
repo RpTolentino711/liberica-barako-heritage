@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminPasswordResetController;
 use App\Http\Controllers\AdminEmailCheckController;
 use App\Http\Controllers\AdminEncyclopediaController;
 use App\Http\Controllers\AdminJourneyStepController;
+use App\Http\Controllers\AdminFarmLocationController;
 use App\Http\Controllers\EncyclopediaController;
 use Illuminate\Support\Facades\Route;
 
@@ -45,6 +46,12 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::get('/bean-to-cup/{step}/edit', [AdminJourneyStepController::class, 'edit'])->name('journey.edit');
     Route::put('/bean-to-cup/{step}', [AdminJourneyStepController::class, 'save'])->name('journey.update');
     Route::patch('/bean-to-cup/{step}/archive', [AdminJourneyStepController::class, 'archive'])->name('journey.archive');
+    Route::get('/farm-locations', [AdminFarmLocationController::class, 'index'])->name('farm-locations.index');
+    Route::get('/farm-locations/new', [AdminFarmLocationController::class, 'create'])->name('farm-locations.create');
+    Route::post('/farm-locations', [AdminFarmLocationController::class, 'save'])->name('farm-locations.store');
+    Route::get('/farm-locations/{location}/edit', [AdminFarmLocationController::class, 'edit'])->name('farm-locations.edit');
+    Route::put('/farm-locations/{location}', [AdminFarmLocationController::class, 'save'])->name('farm-locations.update');
+    Route::delete('/farm-locations/{location}', [AdminFarmLocationController::class, 'delete'])->name('farm-locations.delete');
     Route::get('/encyclopedia/topics/new', [AdminEncyclopediaController::class, 'createTopic'])->name('encyclopedia.topics.new');
     Route::post('/encyclopedia/topics', [AdminEncyclopediaController::class, 'saveTopic'])->name('encyclopedia.topics.store');
     Route::get('/encyclopedia/topics/{topic}/edit', [AdminEncyclopediaController::class, 'editTopic'])->name('encyclopedia.topics.edit');

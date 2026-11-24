@@ -10,12 +10,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="{{ asset('assets/coffee_Liberica_bean.png') }}">
-    <link rel="stylesheet" href="{{ asset('css/landing.css') }}?v=journey-7">
+    <link rel="stylesheet" href="{{ asset('css/landing.css') }}?v=farm-location-pins-8">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <script defer src="{{ asset('js/landing.js') }}?v=encyclopedia-menu-2"></script>
     <script defer src="{{ asset('js/bean-to-cup.js') }}?v=7"></script>
     <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script defer src="{{ asset('js/heritage-farm-map.js') }}?v=1"></script>
+    <script defer src="{{ asset('js/heritage-farm-map.js') }}?v=2"></script>
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to main content</a>
