@@ -2966,7 +2966,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible 
 .encyclopedia-article-aside .aside-topic { display: flex; justify-content: space-between; gap: 12px; color: #38271c; font: 400 19px/1.35 var(--serif); }
 .encyclopedia-article-aside .aside-topic span { color: #a36c3c; font: 14px var(--sans); }
 .encyclopedia-article-aside .aside-all { display: inline-block; margin-top: 14px; color: #8a6140; font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
-.encyclopedia-reading-body { color: #44372d; font-size: 17px; line-height: 1.95; white-space: normal; }
+.encyclopedia-reading-body { color: #44372d; font-size: 17px; line-height: 1.95; white-space: normal; text-align: justify; text-align-last: left; text-justify: inter-word; hyphens: auto; }
 .encyclopedia-reading-body p { margin: 0 0 1.45em; }
 .encyclopedia-reading-body h2 { margin: 2.1em 0 .65em; color: #38271c; font: 400 clamp(25px, 3vw, 34px)/1.2 var(--serif); letter-spacing: -.02em; }
 .encyclopedia-reading-body h2:first-child { margin-top: 0; }
@@ -3003,7 +3003,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible 
     .encyclopedia-article-figure { height: 280px; }
     .encyclopedia-article-layout { grid-template-columns: 1fr; gap: 25px; padding: 34px 24px 0; }
     .encyclopedia-article-aside { position: static; padding: 16px 0; }
-    .encyclopedia-reading-body { font-size: 16px; line-height: 1.85; }
+    .encyclopedia-reading-body { font-size: 16px; line-height: 1.85; text-align: left; }
     .encyclopedia-reading-body p:first-child::first-letter { font-size: 56px; }
     .encyclopedia-source-card { margin-top: 25px; }
 }

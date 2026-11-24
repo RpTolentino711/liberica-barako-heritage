@@ -21,12 +21,6 @@
             <span class="section-number">EXPLORE THE ENCYCLOPEDIA</span>
             <a href="{{ route('encyclopedia.topic', $topic->slug) }}" class="aside-topic">{{ $topic->name }} <span aria-hidden="true">↗</span></a>
             <a href="{{ route('encyclopedia.index') }}" class="aside-all">Browse all topics</a>
-            @if($entry->source_url && $entry->source_label)
-                <div class="encyclopedia-source-card" aria-label="Entry source">
-                    <span class="section-number">SOURCE / FURTHER READING</span>
-                    <a href="{{ $entry->source_url }}" target="_blank" rel="noopener noreferrer">{{ $entry->source_label }} <span aria-hidden="true">↗</span></a>
-                </div>
-            @endif
         </aside>
         <div class="encyclopedia-reading-body">
             @foreach(preg_split('/\R\s*\R/', trim($entry->body), -1, PREG_SPLIT_NO_EMPTY) as $block)
@@ -36,6 +30,13 @@
                     <p>{{ trim($block) }}</p>
                 @endif
             @endforeach
+            @if($entry->source_url && $entry->source_label)
+                <aside class="encyclopedia-source-card" aria-label="Sources used in this article">
+                    <span class="section-number">SOURCE USED / FURTHER READING</span>
+                    <p>This reference was used to support the information in this article.</p>
+                    <a href="{{ $entry->source_url }}" target="_blank" rel="noopener noreferrer">{{ $entry->source_label }} <span aria-hidden="true">↗</span></a>
+                </aside>
+            @endif
         </div>
     </div>
 </article>
