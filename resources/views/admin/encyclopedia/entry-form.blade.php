@@ -72,6 +72,19 @@
             </div>
         </dialog>
     @endif
+    <dialog id="unsavedEncyclopediaChangesDialog" class="delete-confirm-dialog" aria-labelledby="unsavedEncyclopediaChangesTitle" aria-describedby="unsavedEncyclopediaChangesDescription">
+        <div class="delete-confirm-content">
+            <div class="logout-warning-icon" aria-hidden="true">!</div>
+            <p class="logout-dialog-eyebrow">UNSAVED CHANGES</p>
+            <h2 id="unsavedEncyclopediaChangesTitle">Save before leaving?</h2>
+            <p id="unsavedEncyclopediaChangesDescription">It looks like you changed something. Choose Save Changes to jump to the Save Entry button, or leave without saving to discard your edits.</p>
+            <div class="logout-dialog-actions unsaved-change-actions">
+                <button type="button" class="logout-cancel" id="leaveEncyclopediaWithoutSaving">LEAVE WITHOUT SAVING</button>
+                <button type="button" class="button-alt" id="stayInEncyclopediaEditor">KEEP EDITING</button>
+                <button type="button" class="delete-confirm-button" id="jumpToSaveEncyclopediaEntry">SAVE CHANGES</button>
+            </div>
+        </div>
+    </dialog>
     @if($entry?->image_path)
         <dialog id="removeEntryImageDialog" class="delete-confirm-dialog" aria-labelledby="removeEntryImageTitle" aria-describedby="removeEntryImageDescription">
             <div class="delete-confirm-content">
@@ -94,11 +107,16 @@
             if (!editor || !fallback || !addButton) return;
             let hasUnsavedChanges = false;
             let sectionPendingRemoval = null;
+            let pendingNavigationUrl = null;
             const markUnsaved = () => { hasUnsavedChanges = true; };
             const removeSectionDialog = document.getElementById('removeEncyclopediaSectionDialog');
             const cancelRemoveSection = document.getElementById('cancelRemoveEncyclopediaSection');
             const confirmRemoveSection = document.getElementById('confirmRemoveEncyclopediaSection');
             const sectionRemovedInput = document.getElementById('encyclopediaSectionRemoved');
+            const unsavedDialog = document.getElementById('unsavedEncyclopediaChangesDialog');
+            const leaveWithoutSaving = document.getElementById('leaveEncyclopediaWithoutSaving');
+            const stayInEditor = document.getElementById('stayInEncyclopediaEditor');
+            const jumpToSave = document.getElementById('jumpToSaveEncyclopediaEntry');
 
             const parseSections = (value) => {
                 const sections = [];
@@ -278,6 +296,45 @@
                 if (event.target === removeSectionDialog) {
                     sectionPendingRemoval = null;
                     removeSectionDialog.close();
+                }
+            });
+            document.addEventListener('click', (event) => {
+                const link = event.target.closest('a[href]');
+                if (!hasUnsavedChanges || !link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                if (link.target === '_blank' || link.hasAttribute('download')) return;
+                const destination = new URL(link.href, window.location.href);
+                if (destination.origin !== window.location.origin || destination.href === window.location.href) return;
+                if (typeof unsavedDialog?.showModal !== 'function') {
+                    if (window.confirm('You have unsaved changes. Leave without saving?')) {
+                        hasUnsavedChanges = false;
+                        window.location.assign(destination.href);
+                    }
+                    return;
+                }
+                event.preventDefault();
+                pendingNavigationUrl = destination.href;
+                unsavedDialog.showModal();
+            });
+            leaveWithoutSaving?.addEventListener('click', () => {
+                hasUnsavedChanges = false;
+                unsavedDialog.close();
+                if (pendingNavigationUrl) window.location.assign(pendingNavigationUrl);
+            });
+            stayInEditor?.addEventListener('click', () => {
+                pendingNavigationUrl = null;
+                unsavedDialog.close();
+            });
+            jumpToSave?.addEventListener('click', () => {
+                pendingNavigationUrl = null;
+                unsavedDialog.close();
+                const saveButton = fallback.form?.querySelector('button[type="submit"]');
+                saveButton?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                saveButton?.focus({ preventScroll: true });
+            });
+            unsavedDialog?.addEventListener('click', (event) => {
+                if (event.target === unsavedDialog) {
+                    pendingNavigationUrl = null;
+                    unsavedDialog.close();
                 }
             });
             const sectionDeletedDialog = document.getElementById('encyclopediaSectionDeletedDialog');
