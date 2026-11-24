@@ -5,6 +5,7 @@
     <div class="panel form-panel">
         <form action="{{ $entry ? route('admin.encyclopedia.entries.update', [$topic, $entry]) : route('admin.encyclopedia.entries.store', $topic) }}" method="POST" enctype="multipart/form-data">
             @csrf @if($entry) @method('PUT') @endif
+            <input type="hidden" id="encyclopediaSectionRemoved" name="section_removed" value="{{ old('section_removed', '0') }}">
             <label for="title">Entry title *</label>
             <input id="title" name="title" required maxlength="180" value="{{ old('title', $entry?->title) }}">
             <label for="slug">URL slug (optional)</label>
@@ -46,6 +47,19 @@
             </div>
         </div>
     </dialog>
+    @if(session('section_deleted'))
+        <dialog id="encyclopediaSectionDeletedDialog" class="delete-confirm-dialog" aria-labelledby="encyclopediaSectionDeletedTitle" aria-describedby="encyclopediaSectionDeletedDescription">
+            <div class="delete-confirm-content">
+                <div class="logout-warning-icon" aria-hidden="true">✓</div>
+                <p class="logout-dialog-eyebrow">SAVED SUCCESSFULLY</p>
+                <h2 id="encyclopediaSectionDeletedTitle">Section deleted</h2>
+                <p id="encyclopediaSectionDeletedDescription">The section was removed from this article and saved successfully.</p>
+                <div class="logout-dialog-actions">
+                    <button type="button" class="logout-cancel" id="closeEncyclopediaSectionDeleted">CONTINUE</button>
+                </div>
+            </div>
+        </dialog>
+    @endif
     @if($entry?->image_path)
         <dialog id="removeEntryImageDialog" class="delete-confirm-dialog" aria-labelledby="removeEntryImageTitle" aria-describedby="removeEntryImageDescription">
             <div class="delete-confirm-content">
@@ -72,6 +86,7 @@
             const removeSectionDialog = document.getElementById('removeEncyclopediaSectionDialog');
             const cancelRemoveSection = document.getElementById('cancelRemoveEncyclopediaSection');
             const confirmRemoveSection = document.getElementById('confirmRemoveEncyclopediaSection');
+            const sectionRemovedInput = document.getElementById('encyclopediaSectionRemoved');
 
             const parseSections = (value) => {
                 const sections = [];
@@ -160,6 +175,7 @@
                         } else if (window.confirm('Are you sure you want to delete this content? It will be removed after you click Save Entry.')) {
                             section.remove();
                             syncBody();
+                            if (sectionRemovedInput) sectionRemovedInput.value = '1';
                             markUnsaved();
                             sectionPendingRemoval = null;
                         }
@@ -241,6 +257,7 @@
                 sectionPendingRemoval?.remove();
                 sectionPendingRemoval = null;
                 syncBody();
+                if (sectionRemovedInput) sectionRemovedInput.value = '1';
                 markUnsaved();
                 removeSectionDialog.close();
             });
@@ -250,6 +267,15 @@
                     removeSectionDialog.close();
                 }
             });
+            const sectionDeletedDialog = document.getElementById('encyclopediaSectionDeletedDialog');
+            const closeSectionDeleted = document.getElementById('closeEncyclopediaSectionDeleted');
+            if (sectionDeletedDialog) {
+                if (typeof sectionDeletedDialog.showModal === 'function') sectionDeletedDialog.showModal();
+                closeSectionDeleted?.addEventListener('click', () => sectionDeletedDialog.close());
+                sectionDeletedDialog.addEventListener('click', (event) => {
+                    if (event.target === sectionDeletedDialog) sectionDeletedDialog.close();
+                });
+            }
             window.addEventListener('beforeunload', (event) => {
                 if (!hasUnsavedChanges) return;
                 event.preventDefault();

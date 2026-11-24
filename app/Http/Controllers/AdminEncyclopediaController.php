@@ -141,6 +141,7 @@ class AdminEncyclopediaController extends Controller
     {
         $this->guard();
         if ($entry) abort_unless($entry->topic_id === $topic->id, 404);
+        $sectionRemoved = $request->boolean('section_removed');
 
         $data = $request->validate([
             'title' => ['required', 'string', 'max:180'],
@@ -150,6 +151,7 @@ class AdminEncyclopediaController extends Controller
             'body' => ['required', 'string', 'max:30000'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'remove_image' => ['nullable', 'boolean'],
+            'section_removed' => ['nullable', 'boolean'],
             'source_label' => ['nullable', 'string', 'max:240'],
             'source_url' => ['nullable', 'url:http,https', 'max:2048'],
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
@@ -168,11 +170,17 @@ class AdminEncyclopediaController extends Controller
             $data['image_path'] = null;
         }
         unset($data['image'], $data['remove_image']);
+        unset($data['section_removed']);
 
         if ($entry) $entry->update($data);
         else $topic->entries()->create($data);
         if ($oldImage && array_key_exists('image_path', $data) && !str_starts_with($oldImage, 'assets/')) {
             Storage::disk('public')->delete($oldImage);
+        }
+
+        if ($entry && $sectionRemoved) {
+            return redirect()->route('admin.encyclopedia.entries.edit', [$topic, $entry])
+                ->with('section_deleted', true);
         }
 
         return redirect()->route('admin.encyclopedia.entries', $topic)->with('ok', 'Encyclopedia entry saved.');
