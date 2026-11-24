@@ -23,7 +23,7 @@
             <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">◫ &nbsp; Dashboard</a>
             <a href="{{ route('admin.articles') }}" class="{{ request()->routeIs('admin.articles*') ? 'active' : '' }}">☷ &nbsp; Educational Articles</a>
             <a href="{{ route('admin.encyclopedia') }}" class="{{ request()->routeIs('admin.encyclopedia*') ? 'active' : '' }}">▤ &nbsp; Encyclopedia</a>
-            <a href="{{ route('admin.journey.index') }}" class="{{ request()->routeIs('admin.journey*') ? 'active' : '' }}">☕ &nbsp; Bean to Cup</a>
+            <a href="{{ route('admin.journey.index') }}" class="{{ request()->routeIs('admin.journey*') ? 'active' : '' }}"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h9v4a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4zM11 5h1.5a2 2 0 0 1 0 4H11M2 14h11"/></svg> &nbsp; Bean to Cup</a>
             <a href="{{ route('admin.gallery') }}" class="{{ request()->routeIs('admin.gallery*') ? 'active' : '' }}">▣ &nbsp; Photo Gallery</a>
             <a href="{{ route('admin.references') }}" class="{{ request()->routeIs('admin.references*') ? 'active' : '' }}">≡ &nbsp; References</a>
             <a href="{{ route('admin.messages') }}" class="{{ request()->routeIs('admin.messages*') ? 'active' : '' }}">✉ &nbsp; Visitor Messages</a>

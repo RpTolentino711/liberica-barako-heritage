@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\EncyclopediaEntry;
 use App\Models\EncyclopediaTopic;
-use App\Models\EncyclopediaReference;
 use App\Support\EncyclopediaReferenceEditor;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -97,7 +96,7 @@ class AdminEncyclopediaController extends Controller
         $data['slug'] = $data['slug'] ?: Str::slug($data['name']);
         if (!$data['slug']) $data['slug'] = 'topic-'.Str::random(8);
         $data['sort_order'] = $data['sort_order'] ?? 0;
-        $data['is_published'] = $request->boolean('is_published');
+        $data['is_published'] = !$topic?->archived_at && $request->boolean('is_published');
 
         if ($topic) {
             $topic->update($data);
@@ -108,16 +107,18 @@ class AdminEncyclopediaController extends Controller
         return redirect()->route('admin.encyclopedia')->with('ok', 'Encyclopedia topic saved.');
     }
 
-    public function deleteTopic(EncyclopediaTopic $topic)
+    public function archiveTopic(Request $request, EncyclopediaTopic $topic)
     {
         $this->guard();
-        $images = $topic->entries()->whereNotNull('image_path')->pluck('image_path')->all();
-        $pdfs = EncyclopediaReference::whereIn('entry_id', $topic->entries()->select('id'))->whereNotNull('pdf_path')->pluck('pdf_path')->all();
-        $topic->delete();
-        Storage::disk('local')->delete($pdfs);
-        Storage::disk('public')->delete(array_values(array_filter($images, fn ($path) => !str_starts_with($path, 'assets/'))));
+        $request->validate(['archived' => ['required', 'boolean']]);
+        $archive = $request->boolean('archived');
+        if ($archive || $topic->archived_at) {
+            $topic->archived_at = $archive ? now() : null;
+            $topic->is_published = false;
+            $topic->save();
+        }
 
-        return back()->with('ok', 'Topic and its entries deleted.');
+        return back()->with('ok', $archive ? 'Topic archived.' : 'Topic restored as a draft.');
     }
 
     public function entries(EncyclopediaTopic $topic)
@@ -167,7 +168,7 @@ class AdminEncyclopediaController extends Controller
         if (!$data['slug']) $data['slug'] = 'entry-'.Str::random(8);
         $data['topic_id'] = $topic->id;
         $data['sort_order'] = $data['sort_order'] ?? 0;
-        $data['is_published'] = $request->boolean('is_published');
+        $data['is_published'] = !$entry?->archived_at && $request->boolean('is_published');
         $oldImage = $entry?->image_path;
         if ($request->hasFile('image')) {
             $data['image_path'] = $request->file('image')->store('encyclopedia', 'public');
@@ -204,17 +205,19 @@ class AdminEncyclopediaController extends Controller
         return redirect()->route('admin.encyclopedia.entries', $topic)->with('ok', 'Encyclopedia entry saved.');
     }
 
-    public function deleteEntry(EncyclopediaTopic $topic, EncyclopediaEntry $entry)
+    public function archiveEntry(Request $request, EncyclopediaTopic $topic, EncyclopediaEntry $entry)
     {
         $this->guard();
         abort_unless($entry->topic_id === $topic->id, 404);
-        $image = $entry->image_path;
-        $pdfs = $entry->references()->whereNotNull('pdf_path')->pluck('pdf_path')->all();
-        $entry->delete();
-        Storage::disk('local')->delete($pdfs);
-        if ($image && !str_starts_with($image, 'assets/')) Storage::disk('public')->delete($image);
+        $request->validate(['archived' => ['required', 'boolean']]);
+        $archive = $request->boolean('archived');
+        if ($archive || $entry->archived_at) {
+            $entry->archived_at = $archive ? now() : null;
+            $entry->is_published = false;
+            $entry->save();
+        }
 
-        return back()->with('ok', 'Encyclopedia entry deleted.');
+        return back()->with('ok', $archive ? 'Entry archived.' : 'Entry restored as a draft.');
     }
 
     public function toggleEntryPublication(EncyclopediaTopic $topic, EncyclopediaEntry $entry)
@@ -222,6 +225,7 @@ class AdminEncyclopediaController extends Controller
         $this->guard();
         abort_unless($entry->topic_id === $topic->id, 404);
 
+        abort_if($entry->archived_at, 409, 'Restore the entry before publishing.');
         $entry->update(['is_published' => !$entry->is_published]);
         $status = $entry->is_published ? 'published' : 'unpublished';
 

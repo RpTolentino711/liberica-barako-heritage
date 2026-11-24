@@ -14,11 +14,11 @@
                 <tr data-step-row data-step-id="{{ $step->id }}">
                     <td><div class="journey-step-row-title"><button type="button" class="journey-drag-handle" data-drag-handle draggable="true" aria-label="Drag {{ $step->title }} to reorder" title="Drag to reorder">&#10247;</button><div><strong>{{ $step->title }}</strong><small>{{ \Illuminate\Support\Str::limit($step->description, 110) }}</small></div></div></td>
                     <td>{{ ucfirst($step->media_type) }}</td>
-                    <td><span class="status">{{ $step->is_published ? 'Published' : 'Draft' }}</span></td>
+                    <td><span class="status">{{ $step->archived_at ? 'Archived' : ($step->is_published ? 'Published' : 'Draft') }}</span></td>
                     <td><div class="journey-order-controls"><span data-step-order>{{ $step->sort_order }}</span><button type="button" data-move-step="up" aria-label="Move {{ $step->title }} up">&#8593;</button><button type="button" data-move-step="down" aria-label="Move {{ $step->title }} down">&#8595;</button></div></td>
                     <td class="actions">
                         <a href="{{ route('admin.journey.edit', $step) }}">Edit</a>
-                        <button type="button" class="danger-button" data-confirm-delete data-delete-action="{{ route('admin.journey.delete', $step) }}" data-delete-title="Delete {{ $step->title }}?" data-delete-description="This Bean to Cup step and its uploaded media will be permanently deleted.">Delete</button>
+                        @include('admin.archive-action', ['action' => route('admin.journey.archive', $step), 'archived' => $step->archived_at])
                     </td>
                 </tr>
             @empty

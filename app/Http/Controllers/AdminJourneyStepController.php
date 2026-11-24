@@ -68,13 +68,20 @@ class AdminJourneyStepController extends Controller
         $data = $request->validate([
             'title' => ['required', 'string', 'max:140'],
             'description' => ['required', 'string', 'max:3000'],
+            'source' => ['nullable', 'string', 'max:255'],
+            'source_url' => ['nullable', 'url:http,https', 'max:2048'],
+            'creator' => ['nullable', 'string', 'max:255'],
+            'photo_url' => ['nullable', 'url:http,https', 'max:2048'],
+            'license' => ['nullable', 'string', 'max:255'],
+            'license_url' => ['nullable', 'url:http,https', 'max:2048'],
+            'media_note' => ['nullable', 'string', 'max:255'],
             'media_alt' => ['nullable', 'string', 'max:240'],
             'media' => [$step ? 'nullable' : 'required', 'file', 'mimes:jpg,jpeg,png,webp,mp4,webm,mov', 'max:51200'],
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
         ]);
 
         $data['sort_order'] = $data['sort_order'] ?? 0;
-        $data['is_published'] = $request->boolean('is_published');
+        $data['is_published'] = !$step?->archived_at && $request->boolean('is_published');
         unset($data['media']);
         $oldMedia = $step?->media_path;
 
@@ -94,13 +101,17 @@ class AdminJourneyStepController extends Controller
         return redirect()->route('admin.journey.index')->with('ok', 'Bean to Cup step saved.');
     }
 
-    public function delete(JourneyStep $step)
+    public function archive(Request $request, JourneyStep $step)
     {
         $this->guard();
-        $mediaPath = $step->media_path;
-        $step->delete();
-        if ($mediaPath && !str_starts_with($mediaPath, 'assets/')) Storage::disk('public')->delete($mediaPath);
+        $request->validate(['archived' => ['required', 'boolean']]);
+        $archive = $request->boolean('archived');
+        if ($archive || $step->archived_at) {
+            $step->archived_at = $archive ? now() : null;
+            $step->is_published = false;
+            $step->save();
+        }
 
-        return back()->with('ok', 'Bean to Cup step deleted.');
+        return back()->with('ok', $archive ? 'Step archived.' : 'Step restored as a draft.');
     }
 }

@@ -16,10 +16,11 @@
                 <tr>
                     <td><strong><a class="encyclopedia-topic-title-link" href="{{ route('admin.encyclopedia.topics.edit', $topic) }}">{{ $topic->name }}</a></strong><small>{{ $topic->slug }}</small></td>
                     <td>{{ $topic->entries_count }}</td>
-                    <td><span class="status">{{ $topic->is_published ? 'Published' : 'Draft' }}</span></td>
+                    <td><span class="status">{{ $topic->archived_at ? 'Archived' : ($topic->is_published ? 'Published' : 'Draft') }}</span></td>
                     <td>{{ $topic->sort_order }}</td>
                     <td class="actions encyclopedia-admin-actions">
-                        <button type="button" class="danger-button" data-confirm-delete data-delete-action="{{ route('admin.encyclopedia.topics.delete', $topic) }}" data-delete-title="Delete {{ $topic->name }}?" data-delete-description="This will permanently delete this topic and all {{ $topic->entries_count }} entries inside it.">Delete</button>
+                        <a href="{{ route('admin.encyclopedia.topics.edit', $topic) }}">Edit topic</a>
+                        @include('admin.archive-action', ['action' => route('admin.encyclopedia.topics.archive', $topic), 'archived' => $topic->archived_at])
                     </td>
                 </tr>
             @empty

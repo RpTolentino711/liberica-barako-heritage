@@ -28,10 +28,27 @@
             <label for="media_alt">Media description for accessibility (optional)</label>
             <input id="media_alt" name="media_alt" maxlength="240" value="{{ old('media_alt', $step?->media_alt) }}" placeholder="Describe what the photo shows">
 
+            <fieldset><legend>Sources and media credit (optional)</legend>
+                <label for="source">Reference title</label>
+                <input id="source" name="source" type="text" maxlength="255" value="{{ old('source', $step?->source) }}">
+                <label for="source_url">Reference URL</label>
+                <input id="source_url" name="source_url" type="url" maxlength="2048" value="{{ old('source_url', $step?->source_url) }}">
+                <label for="creator">Media creator</label>
+                <input id="creator" name="creator" type="text" maxlength="255" value="{{ old('creator', $step?->creator) }}">
+                <label for="photo_url">Original media URL</label>
+                <input id="photo_url" name="photo_url" type="url" maxlength="2048" value="{{ old('photo_url', $step?->photo_url) }}">
+                <label for="license">License name</label>
+                <input id="license" name="license" type="text" maxlength="255" value="{{ old('license', $step?->license) }}">
+                <label for="license_url">License URL</label>
+                <input id="license_url" name="license_url" type="url" maxlength="2048" value="{{ old('license_url', $step?->license_url) }}">
+                <label for="media_note">Media credit note</label>
+                <input id="media_note" name="media_note" type="text" maxlength="255" value="{{ old('media_note', $step?->media_note) }}">
+            </fieldset>
+
             <label for="sort_order">Display order</label>
             <input id="sort_order" name="sort_order" type="number" min="0" max="9999" value="{{ old('sort_order', $step?->sort_order ?? 0) }}">
 
-            <label class="check"><input name="is_published" type="checkbox" value="1" @checked(old('is_published', $step?->is_published ?? true))> Show this step in the public carousel</label>
+            <label class="check"><input name="is_published" @disabled($step?->archived_at) type="checkbox" value="1" @checked(old('is_published', $step?->is_published ?? true))> Show this step in the public carousel</label>
             <div class="form-actions">
                 <button class="primary-button" type="submit">SAVE STEP</button>
                 <a class="button-alt" href="{{ route('admin.journey.index') }}">CANCEL</a>

@@ -7,44 +7,75 @@
         const dots = [...carousel.querySelectorAll('[data-journey-dot]')];
         const current = carousel.querySelector('[data-journey-current]');
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-        const pauseReasons = new Set();
+        const pauseReasons = new Set(['offscreen']);
+        if (document.hidden) pauseReasons.add('hidden');
         let activeIndex = 0;
-        let autoplayEnabled = slides.length > 1 && !reducedMotion.matches;
+        const nextTitle = next?.querySelector('[data-next-title]');
+        let transitions = [];
         let timer = null;
 
         if (!track || slides.length === 0) return;
 
         const scheduleAutoplay = () => {
-            window.clearInterval(timer);
-            timer = null;
-            if (!autoplayEnabled || pauseReasons.size || slides.length < 2) return;
-            timer = window.setInterval(() => showStep(activeIndex + 1, true), 6500);
+            window.clearTimeout(timer);
+            const status = current?.parentElement;
+            status?.setAttribute('aria-live', !reducedMotion.matches && !pauseReasons.size ? 'off' : 'polite');
+            if (reducedMotion.matches || pauseReasons.size || slides.length < 2) return;
+            timer = window.setTimeout(() => showStep(activeIndex + 1), 6500);
         };
 
-        const showStep = (index, automatic = false) => {
+        const showStep = (index) => {
             const nextIndex = ((index % slides.length) + slides.length) % slides.length;
-            if (slides[activeIndex]) slides[activeIndex].querySelector('video')?.pause();
+            transitions.forEach(animation => animation.cancel());
+            transitions = [];
+            const outgoing = slides[activeIndex];
+            const incoming = slides[nextIndex];
+            if (outgoing !== incoming) {
+                outgoing.querySelector('video')?.pause();
+                if (!reducedMotion.matches) {
+                    const direction = index > activeIndex ? 100 : -100;
+                    const motion = { duration: 380, easing: 'cubic-bezier(.22,.7,.25,1)' };
+                    transitions = [
+                        outgoing.animate([
+                            { transform: 'none', visibility: 'visible' },
+                            { transform: 'translateX(' + -direction + '%)', visibility: 'visible' },
+                        ], motion),
+                        incoming.animate([
+                            { transform: 'translateX(' + direction + '%)' },
+                            { transform: 'none' },
+                        ], motion),
+                    ];
+                }
+            }
             activeIndex = nextIndex;
-            track.style.transform = `translateX(-${activeIndex * 100}%)`;
+            if (nextTitle) nextTitle.textContent = 'Next: ' + slides[(activeIndex + 1) % slides.length].querySelector('h3').textContent;
             slides.forEach((slide, slideIndex) => {
                 const active = slideIndex === activeIndex;
                 slide.setAttribute('aria-hidden', String(!active));
                 slide.inert = !active;
+                if (!active) slide.querySelector('details[open]')?.removeAttribute('open');
             });
             dots.forEach((dot, dotIndex) => {
                 if (dotIndex === activeIndex) dot.setAttribute('aria-current', 'step');
                 else dot.removeAttribute('aria-current');
             });
             if (current) current.textContent = String(activeIndex + 1).padStart(2, '0');
-            if (!automatic) scheduleAutoplay();
+            scheduleAutoplay();
         };
 
         previous?.addEventListener('click', () => showStep(activeIndex - 1));
         next?.addEventListener('click', () => showStep(activeIndex + 1));
         dots.forEach((dot) => dot.addEventListener('click', () => showStep(Number(dot.dataset.journeyDot))));
-        carousel.addEventListener('pointerenter', () => { pauseReasons.add('pointer'); scheduleAutoplay(); });
-        carousel.addEventListener('pointerleave', () => { pauseReasons.delete('pointer'); scheduleAutoplay(); });
-        carousel.addEventListener('focusin', () => { pauseReasons.add('focus'); scheduleAutoplay(); });
+        reducedMotion.addEventListener('change', scheduleAutoplay);
+        new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) pauseReasons.delete('offscreen');
+            else pauseReasons.add('offscreen');
+            scheduleAutoplay();
+        }).observe(carousel);
+        carousel.addEventListener('focusin', (event) => {
+            if (event.target.matches(':focus-visible')) pauseReasons.add('focus');
+            scheduleAutoplay();
+        });
         carousel.addEventListener('focusout', (event) => {
             if (!carousel.contains(event.relatedTarget)) {
                 pauseReasons.delete('focus');
@@ -57,6 +88,11 @@
             scheduleAutoplay();
         });
         slides.forEach((slide) => {
+            slide.querySelector('details')?.addEventListener('toggle', () => {
+                if (carousel.querySelector('.journey-slide[aria-hidden="false"] details[open]')) pauseReasons.add('credits');
+                else pauseReasons.delete('credits');
+                scheduleAutoplay();
+            });
             const video = slide.querySelector('video');
             video?.addEventListener('play', () => { pauseReasons.add('video'); scheduleAutoplay(); });
             video?.addEventListener('pause', () => { pauseReasons.delete('video'); scheduleAutoplay(); });
@@ -67,6 +103,21 @@
             if (event.key === 'ArrowRight') { event.preventDefault(); showStep(activeIndex + 1); }
         });
 
+        const viewport = carousel.querySelector('.journey-carousel-window');
+        let start;
+        viewport.addEventListener('touchstart', (event) => {
+            start = event.touches.length === 1 ? event.touches[0] : null;
+        }, { passive: true });
+        viewport.addEventListener('touchcancel', () => { start = null; });
+        viewport.addEventListener('touchend', (event) => {
+            if (!start) return;
+            const dx = event.changedTouches[0].clientX - start.clientX;
+            const dy = event.changedTouches[0].clientY - start.clientY;
+            start = null;
+            if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+                showStep(activeIndex + (dx < 0 ? 1 : -1));
+            }
+        }, { passive: true });
         showStep(0);
     });
 })();

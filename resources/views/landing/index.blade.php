@@ -183,25 +183,41 @@
             <div class="journey-carousel-window" tabindex="0" aria-label="Use arrow keys to browse Bean to Cup steps">
                 <div class="journey-carousel-track">
                     @foreach($journeySteps as $step)
-                        @php($journeyMediaUrl = str_starts_with($step->media_path, 'assets/') ? asset($step->media_path) : asset('storage/'.$step->media_path))
+                        @php($journeyImage = match ($step->media_path) {
+                            'assets/pexels-carlostorres-18505518.jpg' => 'assets/pexels-carlostorres-18505518-carousel.jpg',
+                            'assets/pexels-michael-burrows-7125451.jpg' => 'assets/pexels-michael-burrows-7125451-carousel.jpg',
+                            default => $step->media_path,
+                        })
+                        @php($journeyMediaUrl = str_starts_with($journeyImage, 'assets/') ? asset($journeyImage) : asset('storage/'.$step->media_path))
                         <article class="journey-slide" aria-roledescription="slide" aria-label="Step {{ $loop->iteration }} of {{ $journeySteps->count() }}" aria-hidden="{{ $loop->first ? 'false' : 'true' }}">
                             <div class="journey-slide-media">
                                 @if($step->media_type === 'video')
                                     <video controls playsinline preload="metadata" aria-label="{{ $step->title }} process video"><source src="{{ $journeyMediaUrl }}"></video>
                                 @else
-                                    <img src="{{ $journeyMediaUrl }}" alt="{{ $step->media_alt ?: $step->title }}" loading="lazy">
+                                    <img src="{{ $journeyMediaUrl }}" alt="{{ $step->media_alt ?: $step->title }}" loading="lazy" decoding="async">
                                 @endif
                             </div>
                             <div class="journey-slide-copy">
                                 <span class="journey-step-count">STEP {{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }} <i>/ {{ str_pad($journeySteps->count(), 2, '0', STR_PAD_LEFT) }}</i></span>
-                                <span class="eyebrow gold">FROM TREE TO CUP</span>
                                 <h3>{{ $step->title }}</h3>
                                 <p>{{ $step->description }}</p>
+                                @if($step->source || $step->source_url || $step->creator || $step->photo_url || $step->license || $step->license_url || $step->media_note)
+                                    <details class="journey-credits">
+                                        <summary>Sources &amp; {{ $step->media_type === 'video' ? 'video' : 'photo' }} credit</summary>
+                                        @if($step->source_url)<p><a href="{{ $step->source_url }}">{{ $step->source ?: 'Reference' }}</a></p>@elseif($step->source)<p>{{ $step->source }}</p>@endif
+                                        <p>
+                                            @if($step->photo_url)<a href="{{ $step->photo_url }}">{{ $step->creator ?: 'Original media' }}</a>@else{{ $step->creator }}@endif
+                                            @if($step->license_url)<a href="{{ $step->license_url }}">{{ $step->license ?: 'License' }}</a>@else{{ $step->license }}@endif
+                                            {{ $step->media_note }}
+                                        </p>
+                                    </details>
+                                @endif
                             </div>
                         </article>
                     @endforeach
                 </div>
             </div>
+            @if($journeySteps->count() > 1)
             <div class="journey-carousel-controls">
                 <button type="button" class="journey-carousel-arrow" data-journey-prev aria-label="Previous step">&#8592;</button>
                 <div class="journey-carousel-dots" role="group" aria-label="Choose a Bean to Cup step">
@@ -209,9 +225,10 @@
                         <button type="button" data-journey-dot="{{ $loop->index }}" aria-label="Go to step {{ $loop->iteration }}" aria-current="{{ $loop->first ? 'step' : 'false' }}"></button>
                     @endforeach
                 </div>
-                <span class="journey-carousel-status" aria-live="polite"><span data-journey-current>01</span> / {{ str_pad($journeySteps->count(), 2, '0', STR_PAD_LEFT) }}</span>
-                <button type="button" class="journey-carousel-arrow" data-journey-next aria-label="Next step">&#8594;</button>
+                <span class="journey-carousel-status" aria-live="off"><span data-journey-current>01</span> / {{ str_pad($journeySteps->count(), 2, '0', STR_PAD_LEFT) }}</span>
+                <button type="button" class="journey-carousel-arrow" data-journey-next><span data-next-title>Next: {{ $journeySteps[1]->title }}</span> &#8594;</button>
             </div>
+            @endif
         </div>
     @endif
 

@@ -2,7 +2,7 @@
 @section('title', $topic->name)
 @section('content')
     <div class="panel-head standalone">
-        <p class="lead"><strong>{{ $entries->count() }} {{ \Illuminate\Support\Str::plural('entry', $entries->count()) }}</strong> in {{ $topic->name }}. Edit or delete an individual entry below, or add another one.</p>
+        <p class="lead"><strong>{{ $entries->count() }} {{ \Illuminate\Support\Str::plural('entry', $entries->count()) }}</strong> in {{ $topic->name }}. Edit or archive an individual entry below, or add another one.</p>
         <a href="{{ route('admin.encyclopedia.entries.new', $topic) }}" class="primary-button small">+ NEW ENTRY</a>
     </div>
     <p class="encyclopedia-admin-back"><a href="{{ route('admin.encyclopedia') }}">← All encyclopedia topics</a></p>
@@ -14,14 +14,18 @@
                 <tr>
                     <td><strong>{{ $entry->title }}</strong><small>{{ $entry->slug }}</small></td>
                     <td>
-                        <button type="button" class="entry-publication-toggle {{ $entry->is_published ? 'is-published' : 'is-draft' }}" data-confirm-publication data-publication-action="{{ route('admin.encyclopedia.entries.publication', [$topic, $entry]) }}" data-entry-title="{{ $entry->title }}" data-entry-published="{{ $entry->is_published ? '1' : '0' }}">
+                        @if($entry->archived_at)
+                            <span class="status">Archived</span>
+                        @else
+                            <button type="button" class="entry-publication-toggle {{ $entry->is_published ? 'is-published' : 'is-draft' }}" data-confirm-publication data-publication-action="{{ route('admin.encyclopedia.entries.publication', [$topic, $entry]) }}" data-entry-title="{{ $entry->title }}" data-entry-published="{{ $entry->is_published ? '1' : '0' }}">
                             {{ $entry->is_published ? 'Published' : 'Draft' }} <span aria-hidden="true">⌄</span>
                         </button>
+                        @endif
                     </td>
                     <td>{{ $entry->sort_order }}</td>
                     <td class="actions">
                         <a class="encyclopedia-entry-edit" href="{{ route('admin.encyclopedia.entries.edit', [$topic, $entry]) }}">EDIT ENTRY</a>
-                        <button type="button" class="danger-button" data-confirm-delete data-delete-action="{{ route('admin.encyclopedia.entries.delete', [$topic, $entry]) }}" data-delete-title="Delete {{ $entry->title }}?" data-delete-description="This encyclopedia entry will be permanently deleted.">Delete</button>
+                        @include('admin.archive-action', ['action' => route('admin.encyclopedia.entries.archive', [$topic, $entry]), 'archived' => $entry->archived_at])
                     </td>
                 </tr>
             @empty
