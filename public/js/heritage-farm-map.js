@@ -70,8 +70,19 @@
                 if (!Number.isFinite(point[0]) || !Number.isFinite(point[1])) return;
                 const marker = L.marker(point).addTo(map).bindPopup(popupContent(place), { maxWidth: 280 });
                 marker.on('click', () => {
-                    document.querySelectorAll('.farm-location-card.is-selected').forEach((card) => card.classList.remove('is-selected'));
-                    document.querySelector(`[data-location-card="${Number(place.id)}"]`)?.classList.add('is-selected');
+                    const emptyState = document.getElementById('farm-location-empty');
+                    if (emptyState) emptyState.hidden = true;
+
+                    document.querySelectorAll('.farm-location-card[data-location-card]').forEach((card) => {
+                        card.hidden = true;
+                        card.classList.remove('is-selected');
+                    });
+                    const targetCard = document.querySelector(`[data-location-card="${Number(place.id)}"]`);
+                    if (targetCard) {
+                        targetCard.hidden = false;
+                        targetCard.classList.add('is-selected');
+                        targetCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
                 });
                 markers.set(Number(place.id), marker);
                 bounds.push(point);
@@ -80,14 +91,14 @@
             if (bounds.length === 1) map.setView(bounds[0], 13);
             else if (bounds.length > 1) map.fitBounds(bounds, { padding: [50, 50], maxZoom: 11 });
 
-            document.querySelectorAll('[data-location-card]').forEach((card) => {
-                card.addEventListener('click', (event) => {
-                    if (event.target.closest('a')) return;
-                    const marker = markers.get(Number(card.dataset.locationCard));
-                    if (!marker) return;
-                    map.setView(marker.getLatLng(), Math.max(map.getZoom(), 12));
-                    marker.openPopup();
+            // Close popup / deselect card when clicking empty space on the map or closing popup
+            map.on('popupclose', () => {
+                document.querySelectorAll('.farm-location-card[data-location-card]').forEach((card) => {
+                    card.hidden = true;
+                    card.classList.remove('is-selected');
                 });
+                const emptyState = document.getElementById('farm-location-empty');
+                if (emptyState) emptyState.hidden = false;
             });
 
             window.addEventListener('resize', () => map.invalidateSize());

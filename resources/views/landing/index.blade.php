@@ -365,10 +365,19 @@
         </div>
 
         <div class="farm-location-list" aria-label="Documented coffee farms and educational sites">
+            <div id="farm-location-empty" class="farm-location-card farm-location-card-placeholder">
+                <div class="farm-placeholder-content">
+                    <span class="farm-placeholder-icon" aria-hidden="true">📍</span>
+                    <h3>Select a pin on the map</h3>
+                    <p>Click any map marker to view that farm or site's photo, location details, and research notes.</p>
+                </div>
+            </div>
             @forelse($farmLocations as $location)
                 @php($locationPhoto = $location->photo_path ? (str_starts_with($location->photo_path, 'assets/') ? asset($location->photo_path) : asset('storage/'.$location->photo_path)) : null)
-                <article class="farm-location-card" data-location-card="{{ $location->id }}">
-                    @if($locationPhoto)<img class="farm-location-photo" src="{{ $locationPhoto }}" alt="{{ $location->photo_alt ?: $location->name }}" loading="lazy">@endif
+                <article class="farm-location-card" data-location-card="{{ $location->id }}" hidden>
+                    @if($locationPhoto)
+                        <img class="farm-location-photo" src="{{ $locationPhoto }}" alt="{{ $location->photo_alt ?: $location->name }}">
+                    @endif
                     <div class="farm-location-card-top">
                         <span class="farm-location-number">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }} / BATANGAS</span>
                         @if($location->location_type)<span class="farm-location-type">{{ $location->location_type }}</span>@endif

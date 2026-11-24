@@ -2839,11 +2839,54 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible 
     min-width: 0;
     display: flex;
     flex-direction: column;
-    cursor: pointer;
+    cursor: default;
     transition: border-color .2s ease, box-shadow .2s ease;
 }
-.farm-location-card:hover,.farm-location-card.is-selected { border-color: #a97a4b; box-shadow: 0 8px 24px rgba(49, 29, 16, .09); }
-.farm-location-photo { display: block; width: 100%; height: 155px; margin: 0 0 18px; object-fit: cover; background: #e6d9ca; }
+.farm-location-card[hidden] { display: none !important; }
+.farm-location-card:hover { border-color: #a97a4b; box-shadow: 0 8px 24px rgba(49, 29, 16, .09); }
+.farm-location-card.is-selected { border-color: #835630; box-shadow: 0 10px 28px rgba(49, 29, 16, .14); }
+.farm-location-photo {
+    display: block;
+    width: 100%;
+    height: 210px;
+    margin: 0 0 18px;
+    object-fit: cover;
+    background: #e6d9ca;
+    animation: farmPhotoReveal .35s ease-out;
+}
+.farm-location-card-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 380px;
+    padding: clamp(30px, 4vw, 50px);
+    background: #fffaf3;
+    border: 2px dashed #d8c5b0;
+    box-shadow: none;
+}
+.farm-placeholder-icon {
+    font-size: 34px;
+    margin-bottom: 14px;
+    display: inline-block;
+}
+.farm-location-card-placeholder h3 {
+    font: 400 clamp(22px, 2vw, 28px)/1.2 var(--serif);
+    color: #302018;
+    margin: 0 0 10px;
+}
+.farm-location-card-placeholder p {
+    color: #725f4f;
+    font-size: 13px;
+    line-height: 1.7;
+    max-width: 310px;
+    margin: 0;
+}
+@keyframes farmPhotoReveal {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
 .farm-location-card-top {
     display: flex;
