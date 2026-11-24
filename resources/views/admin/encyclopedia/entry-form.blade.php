@@ -34,6 +34,18 @@
             <div class="form-actions"><button class="primary-button" type="submit">SAVE ENTRY</button><a class="button-alt" href="{{ route('admin.encyclopedia.entries', $topic) }}">CANCEL</a></div>
         </form>
     </div>
+    <dialog id="removeEncyclopediaSectionDialog" class="delete-confirm-dialog" aria-labelledby="removeEncyclopediaSectionTitle" aria-describedby="removeEncyclopediaSectionDescription">
+        <div class="delete-confirm-content">
+            <div class="logout-warning-icon" aria-hidden="true">!</div>
+            <p class="logout-dialog-eyebrow">PLEASE CONFIRM</p>
+            <h2 id="removeEncyclopediaSectionTitle">Delete this section?</h2>
+            <p id="removeEncyclopediaSectionDescription">Are you sure you want to delete this content? It will be permanently removed from the article after you click Save Entry.</p>
+            <div class="logout-dialog-actions">
+                <button type="button" class="logout-cancel" id="cancelRemoveEncyclopediaSection">CANCEL</button>
+                <button type="button" class="delete-confirm-button" id="confirmRemoveEncyclopediaSection">YES, DELETE SECTION</button>
+            </div>
+        </div>
+    </dialog>
     @if($entry?->image_path)
         <dialog id="removeEntryImageDialog" class="delete-confirm-dialog" aria-labelledby="removeEntryImageTitle" aria-describedby="removeEntryImageDescription">
             <div class="delete-confirm-content">
@@ -55,7 +67,11 @@
             const addButton = document.getElementById('addEncyclopediaSection');
             if (!editor || !fallback || !addButton) return;
             let hasUnsavedChanges = false;
+            let sectionPendingRemoval = null;
             const markUnsaved = () => { hasUnsavedChanges = true; };
+            const removeSectionDialog = document.getElementById('removeEncyclopediaSectionDialog');
+            const cancelRemoveSection = document.getElementById('cancelRemoveEncyclopediaSection');
+            const confirmRemoveSection = document.getElementById('confirmRemoveEncyclopediaSection');
 
             const parseSections = (value) => {
                 const sections = [];
@@ -137,7 +153,17 @@
                     remove.type = 'button';
                     remove.className = 'encyclopedia-section-remove';
                     remove.textContent = 'Remove section';
-                    remove.addEventListener('click', () => { section.remove(); syncBody(); markUnsaved(); });
+                    remove.addEventListener('click', () => {
+                        sectionPendingRemoval = section;
+                        if (removeSectionDialog && typeof removeSectionDialog.showModal === 'function') {
+                            removeSectionDialog.showModal();
+                        } else if (window.confirm('Are you sure you want to delete this content? It will be removed after you click Save Entry.')) {
+                            section.remove();
+                            syncBody();
+                            markUnsaved();
+                            sectionPendingRemoval = null;
+                        }
+                    });
                     sectionHead.append(remove);
                 }
 
@@ -206,6 +232,23 @@
             fallback.form?.querySelectorAll('input, textarea').forEach((field) => {
                 field.addEventListener('input', markUnsaved);
                 field.addEventListener('change', markUnsaved);
+            });
+            cancelRemoveSection?.addEventListener('click', () => {
+                sectionPendingRemoval = null;
+                removeSectionDialog.close();
+            });
+            confirmRemoveSection?.addEventListener('click', () => {
+                sectionPendingRemoval?.remove();
+                sectionPendingRemoval = null;
+                syncBody();
+                markUnsaved();
+                removeSectionDialog.close();
+            });
+            removeSectionDialog?.addEventListener('click', (event) => {
+                if (event.target === removeSectionDialog) {
+                    sectionPendingRemoval = null;
+                    removeSectionDialog.close();
+                }
             });
             window.addEventListener('beforeunload', (event) => {
                 if (!hasUnsavedChanges) return;
