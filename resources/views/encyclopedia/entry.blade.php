@@ -29,8 +29,12 @@
             @endif
         </aside>
         <div class="encyclopedia-reading-body">
-            @foreach(preg_split('/\R\s*\R/', trim($entry->body), -1, PREG_SPLIT_NO_EMPTY) as $paragraph)
-                <p>{{ trim($paragraph) }}</p>
+            @foreach(preg_split('/\R\s*\R/', trim($entry->body), -1, PREG_SPLIT_NO_EMPTY) as $block)
+                @if(str_starts_with(trim($block), '## '))
+                    <h2>{{ trim(substr(trim($block), 3)) }}</h2>
+                @else
+                    <p>{{ trim($block) }}</p>
+                @endif
             @endforeach
         </div>
     </div>

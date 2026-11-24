@@ -11,8 +11,9 @@
             <input id="slug" name="slug" maxlength="190" value="{{ old('slug', $entry?->slug) }}" placeholder="generated-from-entry-title">
             <label for="summary">Short introduction *</label>
             <textarea id="summary" name="summary" maxlength="500" rows="3" required>{{ old('summary', $entry?->summary) }}</textarea>
-            <label for="body">Entry content *</label>
+            <label for="body">Entry content * (up to 30,000 characters)</label>
             <textarea id="body" name="body" maxlength="30000" rows="14" required>{{ old('body', $entry?->body) }}</textarea>
+            <p class="encyclopedia-editor-note">Use a blank line between paragraphs. To add a section heading, start a line with <code>## </code> followed by the heading. You can keep adding sections to this entry or create more entries from the topic’s Manage entries page.</p>
             <div class="two-col">
                 <div><label for="source_label">Source name</label><input id="source_label" name="source_label" maxlength="240" value="{{ old('source_label', $entry?->source_label) }}" placeholder="Department of Agriculture"></div>
                 <div><label for="source_url">Source link (HTTPS)</label><input id="source_url" type="url" name="source_url" maxlength="2048" value="{{ old('source_url', $entry?->source_url) }}" placeholder="https://"></div>

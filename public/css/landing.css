@@ -2968,6 +2968,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible 
 .encyclopedia-article-aside .aside-all { display: inline-block; margin-top: 14px; color: #8a6140; font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
 .encyclopedia-reading-body { color: #44372d; font-size: 17px; line-height: 1.95; white-space: normal; }
 .encyclopedia-reading-body p { margin: 0 0 1.45em; }
+.encyclopedia-reading-body h2 { margin: 2.1em 0 .65em; color: #38271c; font: 400 clamp(25px, 3vw, 34px)/1.2 var(--serif); letter-spacing: -.02em; }
+.encyclopedia-reading-body h2:first-child { margin-top: 0; }
 .encyclopedia-reading-body p:first-child::first-letter { float: left; padding: 8px 10px 0 0; color: #9b663b; font: 400 64px/.78 var(--serif); }
 .encyclopedia-source-card {
     display: grid;

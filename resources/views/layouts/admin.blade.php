@@ -6,7 +6,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="{{ asset('assets/coffee_Liberica_bean.png') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v=encyclopedia-1">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v=encyclopedia-sections-2">
 </head>
 <body class="admin-body">
     <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>

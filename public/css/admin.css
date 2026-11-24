@@ -624,6 +624,19 @@ a:focus-visible,button:focus-visible,input:focus-visible {
 
 }
 
+.encyclopedia-editor-note {
+    margin: 0 0 8px;
+    color: #756657;
+    font-size: 12px;
+    line-height: 1.65;
+}
+
+.encyclopedia-editor-note code {
+    padding: 2px 5px;
+    background: #f2e8dc;
+    color: #704a2c;
+}
+
 .form-panel input[type=file] {
 
     padding:10px;
