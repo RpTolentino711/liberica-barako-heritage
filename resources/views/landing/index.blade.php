@@ -199,14 +199,15 @@
                 </div>
             </div>
             <div class="journey-carousel-controls">
-                <button type="button" class="journey-carousel-arrow" data-journey-prev aria-label="Previous step" disabled>&#8592;</button>
+                <button type="button" class="journey-carousel-arrow" data-journey-prev aria-label="Previous step">&#8592;</button>
                 <div class="journey-carousel-dots" role="group" aria-label="Choose a Bean to Cup step">
                     @foreach($journeySteps as $step)
                         <button type="button" data-journey-dot="{{ $loop->index }}" aria-label="Go to step {{ $loop->iteration }}" aria-current="{{ $loop->first ? 'step' : 'false' }}"></button>
                     @endforeach
                 </div>
                 <span class="journey-carousel-status" aria-live="polite"><span data-journey-current>01</span> / {{ str_pad($journeySteps->count(), 2, '0', STR_PAD_LEFT) }}</span>
-                <button type="button" class="journey-carousel-arrow" data-journey-next aria-label="Next step" @disabled($journeySteps->count() < 2)>&#8594;</button>
+                <button type="button" class="journey-carousel-toggle" data-journey-toggle aria-pressed="true">Pause autoplay</button>
+                <button type="button" class="journey-carousel-arrow" data-journey-next aria-label="Next step">&#8594;</button>
             </div>
         </div>
     @endif

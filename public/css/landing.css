@@ -1217,14 +1217,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible 
 }
 
 /* Bean to Cup administrator-managed carousel */
-.journey-carousel { margin-top: 54px; }
+.journey-carousel { width: min(100%, 1400px); margin: 48px auto 0; }
 .journey-carousel-window { overflow: hidden; border: 1px solid rgba(219, 180, 133, .42); background: #24150e; }
 .journey-carousel-window:focus-visible { outline: 2px solid #a96e3b; outline-offset: 4px; }
 .journey-carousel-track { display: flex; transition: transform .55s cubic-bezier(.22, .7, .25, 1); will-change: transform; }
-.journey-slide { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(320px, .92fr); flex: 0 0 100%; min-width: 0; min-height: clamp(370px, 42vw, 560px); color: #fff5e8; }
-.journey-slide-media { position: relative; min-width: 0; min-height: 100%; overflow: hidden; background: #170e09; }
+.journey-slide { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(320px, .92fr); flex: 0 0 100%; width: 100%; height: clamp(360px, 34vw, 490px); min-width: 0; min-height: 0; color: #fff5e8; }
+.journey-slide-media { position: relative; width: 100%; height: 100%; min-width: 0; min-height: 0; overflow: hidden; background: #170e09; }
 .journey-slide-media::after { position: absolute; inset: 0; content: ""; background: linear-gradient(90deg, transparent 70%, #24150e4a); pointer-events: none; }
-.journey-slide-media img,.journey-slide-media video { display: block; width: 100%; height: 100%; min-height: 370px; object-fit: cover; }
+.journey-slide-media img,.journey-slide-media video { display: block; width: 100%; height: 100%; min-height: 0; max-height: 100%; object-fit: cover; }
 .journey-slide-media video { background: #120b08; }
 .journey-slide-copy { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: clamp(32px, 5vw, 74px); background: #24150e; }
 .journey-step-count { margin-bottom: 30px; color: #e9c294; font-size: 11px; font-weight: 700; letter-spacing: 2.2px; }
@@ -1240,21 +1240,24 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible 
 .journey-carousel-dots button { width: 23px; height: 3px; padding: 0; border: 0; background: #cfbba5; cursor: pointer; transition: width .2s ease, background .2s ease; }
 .journey-carousel-dots button[aria-current="step"] { width: 42px; background: #9b6338; }
 .journey-carousel-status { min-width: 60px; color: #76583f; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-align: center; }
+.journey-carousel-toggle { padding: 9px 12px; border: 1px solid #bda184; background: transparent; color: #513a28; font: 600 11px/1.2 var(--sans); cursor: pointer; }
+.journey-carousel-toggle:hover { background: #2b1910; color: #fff5e8; }
 .journey-carousel button:focus-visible { outline: 2px solid #9b6338; outline-offset: 3px; }
 @media (max-width: 700px) {
     .journey-carousel { margin-top: 35px; }
-    .journey-slide { grid-template-columns: 1fr; min-height: 0; }
-    .journey-slide-media { min-height: 0; aspect-ratio: 16 / 10; }
-    .journey-slide-media img,.journey-slide-media video { min-height: 0; }
+    .journey-slide { grid-template-columns: 1fr; width: 100%; height: auto; min-height: 0; }
+    .journey-slide-media { height: auto; min-height: 0; aspect-ratio: 16 / 10; }
+    .journey-slide-media img,.journey-slide-media video { height: 100%; min-height: 0; max-height: none; }
     .journey-slide-copy { padding: 30px 25px 36px; }
     .journey-step-count { margin-bottom: 22px; }
     .journey-slide-copy h3 { font-size: clamp(31px, 9vw, 45px); }
     .journey-slide-copy p { font-size: 14px; }
-    .journey-carousel-controls { gap: 12px; padding-top: 16px; }
+    .journey-carousel-controls { flex-wrap: wrap; gap: 10px; padding-top: 16px; }
     .journey-carousel-arrow { width: 40px; height: 40px; }
-    .journey-carousel-dots { gap: 6px; }
+    .journey-carousel-dots { gap: 6px; margin-left: auto; }
     .journey-carousel-dots button { width: 14px; }
     .journey-carousel-dots button[aria-current="step"] { width: 27px; }
+    .journey-carousel-toggle { padding: 9px 8px; font-size: 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
     .journey-carousel-track,.journey-carousel-arrow,.journey-carousel-dots button { transition: none; }
