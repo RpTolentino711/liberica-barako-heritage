@@ -174,17 +174,42 @@
 
     <div class="section-number">04 / THE JOURNEY</div><div class="section-heading"><div><div class="eyebrow gold">CULTIVATED WITH CARE</div><h2>From tree to <em>tradition.</em></h2></div><p>Behind every cup is a chain of agricultural and craft decisions. Explore the stages that shape the coffee experience.</p></div>
 
-    <div class="journey-grid">
-
-        <article><span>01</span><div class="step-icon">❧</div><h3>Growing</h3><p>Coffee trees are nurtured with suitable planting material, soil, water, and farm care.</p></article>
-
-        <article><span>02</span><div class="step-icon">◉</div><h3>Harvesting</h3><p>Farmers select cherries for processing and sort them for quality.</p></article>
-
-        <article><span>03</span><div class="step-icon">◒</div><h3>Processing</h3><p>Fruit removal, drying, and hulling prepare the green coffee beans.</p></article>
-
-        <article><span>04</span><div class="step-icon" aria-hidden="true"></div><h3>Roasting & brewing</h3><p>Roast development, grind, and preparation influence aroma and taste.</p></article>
-
-    </div>
+    @if($journeySteps->isNotEmpty())
+        <div class="journey-carousel" data-journey-carousel aria-roledescription="carousel" aria-label="Bean to Cup steps">
+            <div class="journey-carousel-window" tabindex="0" aria-label="Use arrow keys to browse Bean to Cup steps">
+                <div class="journey-carousel-track">
+                    @foreach($journeySteps as $step)
+                        @php($journeyMediaUrl = str_starts_with($step->media_path, 'assets/') ? asset($step->media_path) : asset('storage/'.$step->media_path))
+                        <article class="journey-slide" aria-roledescription="slide" aria-label="Step {{ $loop->iteration }} of {{ $journeySteps->count() }}" aria-hidden="{{ $loop->first ? 'false' : 'true' }}">
+                            <div class="journey-slide-media">
+                                @if($step->media_type === 'video')
+                                    <video controls playsinline preload="metadata" aria-label="{{ $step->title }} process video"><source src="{{ $journeyMediaUrl }}"></video>
+                                @else
+                                    <img src="{{ $journeyMediaUrl }}" alt="{{ $step->media_alt ?: $step->title }}" loading="lazy">
+                                @endif
+                            </div>
+                            <div class="journey-slide-copy">
+                                <span class="journey-step-count">STEP {{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }} <i>/ {{ str_pad($journeySteps->count(), 2, '0', STR_PAD_LEFT) }}</i></span>
+                                <span class="eyebrow gold">FROM TREE TO CUP</span>
+                                <h3>{{ $step->title }}</h3>
+                                <p>{{ $step->description }}</p>
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
+            </div>
+            <div class="journey-carousel-controls">
+                <button type="button" class="journey-carousel-arrow" data-journey-prev aria-label="Previous step" disabled>&#8592;</button>
+                <div class="journey-carousel-dots" role="group" aria-label="Choose a Bean to Cup step">
+                    @foreach($journeySteps as $step)
+                        <button type="button" data-journey-dot="{{ $loop->index }}" aria-label="Go to step {{ $loop->iteration }}" aria-current="{{ $loop->first ? 'step' : 'false' }}"></button>
+                    @endforeach
+                </div>
+                <span class="journey-carousel-status" aria-live="polite"><span data-journey-current>01</span> / {{ str_pad($journeySteps->count(), 2, '0', STR_PAD_LEFT) }}</span>
+                <button type="button" class="journey-carousel-arrow" data-journey-next aria-label="Next step" @disabled($journeySteps->count() < 2)>&#8594;</button>
+            </div>
+        </div>
+    @endif
 
 </section>
 

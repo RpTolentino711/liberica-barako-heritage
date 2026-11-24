@@ -6,7 +6,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="{{ asset('assets/coffee_Liberica_bean.png') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v=encyclopedia-image-actions-8">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v=bean-to-cup-admin-9">
 </head>
 <body class="admin-body">
     <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
@@ -22,6 +22,7 @@
             <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">◫ &nbsp; Dashboard</a>
             <a href="{{ route('admin.articles') }}" class="{{ request()->routeIs('admin.articles*') ? 'active' : '' }}">☷ &nbsp; Educational Articles</a>
             <a href="{{ route('admin.encyclopedia') }}" class="{{ request()->routeIs('admin.encyclopedia*') ? 'active' : '' }}">▤ &nbsp; Encyclopedia</a>
+            <a href="{{ route('admin.journey.index') }}" class="{{ request()->routeIs('admin.journey*') ? 'active' : '' }}">☕ &nbsp; Bean to Cup</a>
             <a href="{{ route('admin.gallery') }}" class="{{ request()->routeIs('admin.gallery*') ? 'active' : '' }}">▣ &nbsp; Photo Gallery</a>
             <a href="{{ route('admin.references') }}" class="{{ request()->routeIs('admin.references*') ? 'active' : '' }}">≡ &nbsp; References</a>
             <a href="{{ route('admin.messages') }}" class="{{ request()->routeIs('admin.messages*') ? 'active' : '' }}">✉ &nbsp; Visitor Messages</a>

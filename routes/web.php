@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminPasswordResetController;
 use App\Http\Controllers\AdminEmailCheckController;
 use App\Http\Controllers\AdminEncyclopediaController;
+use App\Http\Controllers\AdminJourneyStepController;
 use App\Http\Controllers\EncyclopediaController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +36,12 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::put('/articles/{article}',[AdminController::class,'saveArticle'])->name('articles.update');
     Route::delete('/articles/{article}',[AdminController::class,'deleteArticle'])->name('articles.delete');
     Route::get('/encyclopedia', [AdminEncyclopediaController::class, 'index'])->name('encyclopedia');
+    Route::get('/bean-to-cup', [AdminJourneyStepController::class, 'index'])->name('journey.index');
+    Route::get('/bean-to-cup/new', [AdminJourneyStepController::class, 'create'])->name('journey.create');
+    Route::post('/bean-to-cup', [AdminJourneyStepController::class, 'save'])->name('journey.store');
+    Route::get('/bean-to-cup/{step}/edit', [AdminJourneyStepController::class, 'edit'])->name('journey.edit');
+    Route::put('/bean-to-cup/{step}', [AdminJourneyStepController::class, 'save'])->name('journey.update');
+    Route::delete('/bean-to-cup/{step}', [AdminJourneyStepController::class, 'delete'])->name('journey.delete');
     Route::get('/encyclopedia/topics/new', [AdminEncyclopediaController::class, 'createTopic'])->name('encyclopedia.topics.new');
     Route::post('/encyclopedia/topics', [AdminEncyclopediaController::class, 'saveTopic'])->name('encyclopedia.topics.store');
     Route::get('/encyclopedia/topics/{topic}/edit', [AdminEncyclopediaController::class, 'editTopic'])->name('encyclopedia.topics.edit');

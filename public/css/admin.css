@@ -719,6 +719,9 @@ a:focus-visible,button:focus-visible,input:focus-visible {
     max-width: 100%;
     margin-top: 8px;
 }
+.journey-admin-help { margin: 8px 0 18px; color: #725f4f; font-size: 13px; line-height: 1.6; }
+.journey-admin-current-media { width: min(460px, 100%); margin: 15px 0 24px; border: 1px solid var(--border); background: #1d110b; }
+.journey-admin-current-media img,.journey-admin-current-media video { display: block; width: 100%; max-height: 330px; object-fit: contain; }
 .encyclopedia-image-preview-wrap .image-preview {
     display: block;
     margin: 0;

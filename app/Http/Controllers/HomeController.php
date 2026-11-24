@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Models\{Article, EncyclopediaTopic, GalleryItem, Reference, Message, Setting};
+use App\Models\{Article, EncyclopediaTopic, GalleryItem, JourneyStep, Reference, Message, Setting};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 
@@ -12,6 +12,9 @@ class HomeController extends Controller {
             'gallery' => GalleryItem::where('is_published', true)->orderBy('sort_order')->orderBy('id')->get(),
             'references' => Reference::where('is_published', true)->orderBy('id')->get(),
             'settings' => Setting::pluck('value', 'key')->all(),
+            'journeySteps' => Schema::hasTable('journey_steps')
+                ? JourneyStep::where('is_published', true)->orderBy('sort_order')->orderBy('id')->get()
+                : collect(),
             'topics' => Schema::hasTable('encyclopedia_topics')
                 ? EncyclopediaTopic::where('is_published', true)->orderBy('sort_order')->orderBy('id')->get()
                 : collect(),
