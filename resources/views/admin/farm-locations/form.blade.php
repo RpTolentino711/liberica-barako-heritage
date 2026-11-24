@@ -19,7 +19,12 @@
             <textarea id="description" name="description" rows="4" maxlength="1200" required placeholder="Give visitors a brief, informative description of this place.">{{ old('description', $location?->description) }}</textarea>
 
             <label>Pin the place on the map *</label>
-            <p class="farm-location-map-help">Click the map or drag the marker to set the location. You can also enter coordinates below.</p>
+            <div class="farm-location-search-row">
+                <p class="farm-location-map-help">Search the address above to move the pin, then click the map or drag the marker to fine-tune it. You can also enter coordinates below.</p>
+                <button class="button-alt" type="button" id="searchFarmLocation">FIND ON MAP</button>
+            </div>
+            <p class="farm-location-search-status" id="farmLocationSearchStatus" role="status" aria-live="polite">Search results are provided by OpenStreetMap contributors.</p>
+            <div id="farmLocationSearchResults" class="farm-location-search-results" hidden></div>
             <div id="farmLocationPickerMap" class="farm-location-picker-map" role="application" aria-label="Map location picker"></div>
             <div class="two-col farm-location-coordinates">
                 <div><label for="latitude">Latitude *</label><input id="latitude" name="latitude" type="number" step="any" min="-90" max="90" required value="{{ old('latitude', $location?->latitude ?? 13.9) }}"></div>
@@ -51,5 +56,5 @@
         </form>
     </div>
     <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script defer src="{{ asset('js/admin-farm-location-map.js') }}?v=1"></script>
+    <script defer src="{{ asset('js/admin-farm-location-map.js') }}?v=2"></script>
 @endsection
