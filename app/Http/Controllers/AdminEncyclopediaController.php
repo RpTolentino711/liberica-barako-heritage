@@ -10,12 +10,51 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class AdminEncyclopediaController extends Controller
 {
     private function guard(): void
     {
         abort_unless(Auth::check() && Auth::user()->is_admin, 403);
+    }
+
+    private function validateSectionSources(string $body): void
+    {
+        preg_match_all('/@@ENCYCLOPEDIA_SOURCE:[^\r\n]*@@/', $body, $allMarkers);
+        preg_match_all('/^@@ENCYCLOPEDIA_SOURCE:([A-Za-z0-9+\/=]+)@@$/m', $body, $validMarkers);
+        if (count($allMarkers[0]) !== count($validMarkers[1])) {
+            throw ValidationException::withMessages(['body' => 'A section source could not be read. Please check its source name and URL.']);
+        }
+
+        $articleText = preg_replace('/^## [^\r\n]*\s*(?:\r?\n|$)/m', '', $body) ?? $body;
+        $articleText = preg_replace('/^@@ENCYCLOPEDIA_SOURCE:[^\r\n]*@@\s*(?:\r?\n|$)/m', '', $articleText) ?? $articleText;
+        if (trim($articleText) === '') {
+            throw ValidationException::withMessages(['body' => 'Add some article text before saving.']);
+        }
+
+        foreach ($validMarkers[1] as $encodedSource) {
+            $json = base64_decode($encodedSource, true);
+            $source = is_string($json) ? json_decode($json, true) : null;
+            if (!is_array($source)) {
+                throw ValidationException::withMessages(['body' => 'A section source could not be read. Please add it again.']);
+            }
+
+            foreach (['label', 'url'] as $field) {
+                if (isset($source[$field]) && !is_string($source[$field])) {
+                    throw ValidationException::withMessages(['body' => 'Section source names and URLs must be plain text.']);
+                }
+                $source[$field] = trim($source[$field] ?? '') ?: null;
+            }
+            $validator = Validator::make($source, [
+                'label' => ['nullable', 'string', 'max:240'],
+                'url' => ['nullable', 'url:http,https', 'max:2048'],
+            ]);
+            if ($validator->fails()) {
+                throw ValidationException::withMessages(['body' => 'Each section source needs a valid HTTP or HTTPS URL and a source name up to 240 characters.']);
+            }
+        }
     }
 
     public function index()
@@ -115,6 +154,7 @@ class AdminEncyclopediaController extends Controller
             'source_url' => ['nullable', 'url:http,https', 'max:2048'],
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
         ]);
+        $this->validateSectionSources($data['body']);
 
         $data['slug'] = $data['slug'] ?: Str::slug($data['title']);
         if (!$data['slug']) $data['slug'] = 'entry-'.Str::random(8);

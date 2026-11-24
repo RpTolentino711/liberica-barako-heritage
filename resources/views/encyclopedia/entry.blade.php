@@ -30,11 +30,20 @@
             @endif
         </aside>
         <div class="encyclopedia-reading-body">
-            @foreach(preg_split('/\R\s*\R/', trim($entry->body), -1, PREG_SPLIT_NO_EMPTY) as $block)
-                @if(str_starts_with(trim($block), '## '))
-                    <h2>{{ trim(substr(trim($block), 3)) }}</h2>
-                @else
-                    <p>{{ trim($block) }}</p>
+            @foreach(\App\Support\EncyclopediaSectionParser::parse($entry->body) as $section)
+                @if($section['heading'])<h2>{{ $section['heading'] }}</h2>@endif
+                @foreach($section['paragraphs'] as $paragraph)
+                    <p>{{ trim($paragraph) }}</p>
+                @endforeach
+                @if($section['source_label'] || $section['source_url'])
+                    <aside class="encyclopedia-section-source" aria-label="Section source">
+                        <span class="section-number">SECTION SOURCE</span>
+                        @if($section['source_url'])
+                            <a href="{{ $section['source_url'] }}" target="_blank" rel="noopener noreferrer">{{ $section['source_label'] ?: $section['source_url'] }} <span aria-hidden="true">↗</span></a>
+                        @else
+                            <span>{{ $section['source_label'] }}</span>
+                        @endif
+                    </aside>
                 @endif
             @endforeach
         </div>

@@ -16,7 +16,7 @@
             <textarea id="body" name="body" maxlength="30000" rows="14" required>{{ old('body', $entry?->body) }}</textarea>
             <div class="encyclopedia-editor-actions">
                 <button class="button-alt" id="addEncyclopediaSection" type="button">+ ADD MORE</button>
-                <p class="encyclopedia-editor-note">Add another section to this article. Leave a section heading blank if you only need more paragraphs.</p>
+                <p class="encyclopedia-editor-note">Add another section to this article. Each section can have its own optional source name and URL; its citation appears beneath that section on the public article.</p>
             </div>
             <div class="two-col">
                 <div><label for="source_label">Source name</label><input id="source_label" name="source_label" maxlength="240" value="{{ old('source_label', $entry?->source_label) }}" placeholder="Department of Agriculture"></div>
@@ -45,34 +45,66 @@
                 const sections = [];
                 let heading = '';
                 let content = [];
+                let sourceLabel = '';
+                let sourceUrl = '';
                 let hasHeading = false;
+                const saveCurrent = () => {
+                    if (content.join('\n').trim() || hasHeading || sections.length === 0) {
+                        sections.push({ heading, content: content.join('\n').trim(), sourceLabel, sourceUrl });
+                    }
+                };
                 for (const line of value.split(/\r?\n/)) {
                     if (line.startsWith('## ')) {
-                        if (content.join('\n').trim() || hasHeading) sections.push({ heading, content: content.join('\n').trim() });
+                        if (content.join('\n').trim() || hasHeading) saveCurrent();
                         heading = line.slice(3).trim();
                         content = [];
+                        sourceLabel = '';
+                        sourceUrl = '';
                         hasHeading = true;
+                    } else if (line.startsWith('@@ENCYCLOPEDIA_SOURCE:')) {
+                        const marker = line.match(/^@@ENCYCLOPEDIA_SOURCE:([A-Za-z0-9+/=]+)@@$/);
+                        if (marker) {
+                            try {
+                                const binary = atob(marker[1]);
+                                const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+                                const source = JSON.parse(new TextDecoder().decode(bytes));
+                                sourceLabel = source.label || '';
+                                sourceUrl = source.url || '';
+                            } catch (_) {
+                                content.push(line);
+                            }
+                        } else {
+                            content.push(line);
+                        }
                     } else {
                         content.push(line);
                     }
                 }
-                if (content.join('\n').trim() || hasHeading || sections.length === 0) {
-                    sections.push({ heading, content: content.join('\n').trim() });
-                }
+                saveCurrent();
                 return sections;
+            };
+
+            const sourceMarker = (label, url) => {
+                if (!label && !url) return '';
+                const bytes = new TextEncoder().encode(JSON.stringify({ label, url }));
+                let binary = '';
+                bytes.forEach((byte) => { binary += String.fromCharCode(byte); });
+                return `@@ENCYCLOPEDIA_SOURCE:${btoa(binary)}@@`;
             };
 
             const syncBody = () => {
                 const values = [...editor.querySelectorAll('.encyclopedia-content-section')].map((section) => {
                     const heading = section.querySelector('[data-section-heading]').value.trim();
                     const content = section.querySelector('[data-section-content]').value.trim();
-                    if (!heading && !content) return '';
-                    return heading ? `## ${heading}\n\n${content}` : content;
+                    const sourceLabel = section.querySelector('[data-section-source-label]').value.trim();
+                    const sourceUrl = section.querySelector('[data-section-source-url]').value.trim();
+                    if (!heading && !content && !sourceLabel && !sourceUrl) return '';
+                    return [heading ? `## ${heading}` : '', sourceMarker(sourceLabel, sourceUrl), content].filter(Boolean).join('\n\n');
                 }).filter(Boolean);
                 fallback.value = values.join('\n\n');
             };
 
-            const addSection = ({ heading = '', content = '' } = {}, removable = true) => {
+            const addSection = ({ heading = '', content = '', sourceLabel = '', sourceUrl = '' } = {}, removable = true) => {
                 const section = document.createElement('section');
                 section.className = 'encyclopedia-content-section';
 
@@ -106,14 +138,37 @@
                 const contentInput = document.createElement('textarea');
                 contentInput.rows = 7;
                 contentInput.maxLength = 30000;
+                contentInput.required = editor.children.length === 0;
                 contentInput.value = content;
                 contentInput.dataset.sectionContent = '';
                 contentLabel.append(contentInput);
 
-                section.append(sectionHead, headingLabel, contentLabel);
+                const sourceLabelField = document.createElement('label');
+                sourceLabelField.textContent = 'Source name (optional)';
+                const sourceLabelInput = document.createElement('input');
+                sourceLabelInput.type = 'text';
+                sourceLabelInput.maxLength = 240;
+                sourceLabelInput.placeholder = 'For example: City Government of Lipa';
+                sourceLabelInput.value = sourceLabel;
+                sourceLabelInput.dataset.sectionSourceLabel = '';
+                sourceLabelField.append(sourceLabelInput);
+
+                const sourceUrlField = document.createElement('label');
+                sourceUrlField.textContent = 'Source URL (optional)';
+                const sourceUrlInput = document.createElement('input');
+                sourceUrlInput.type = 'url';
+                sourceUrlInput.maxLength = 2048;
+                sourceUrlInput.placeholder = 'https://';
+                sourceUrlInput.value = sourceUrl;
+                sourceUrlInput.dataset.sectionSourceUrl = '';
+                sourceUrlField.append(sourceUrlInput);
+
+                section.append(sectionHead, headingLabel, contentLabel, sourceLabelField, sourceUrlField);
                 editor.append(section);
                 headingInput.addEventListener('input', syncBody);
                 contentInput.addEventListener('input', syncBody);
+                sourceLabelInput.addEventListener('input', syncBody);
+                sourceUrlInput.addEventListener('input', syncBody);
             };
 
             parseSections(fallback.value).forEach((section, index) => addSection(section, index > 0));
