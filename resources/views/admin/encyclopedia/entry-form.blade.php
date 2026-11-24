@@ -26,8 +26,20 @@
             <label for="image">Optional image (JPG, PNG, WebP; max 4 MB)</label>
             <input id="image" type="file" name="image" accept="image/jpeg,image/png,image/webp">
             @if($entry?->image_path)
-                <img class="image-preview" src="{{ str_starts_with($entry->image_path, 'assets/') ? asset($entry->image_path) : asset('storage/'.$entry->image_path) }}" alt="Current entry image">
-                <label class="check"><input name="remove_image" type="checkbox" value="1"> Remove current image</label>
+                <input type="hidden" id="removeCurrentImage" name="remove_image" value="0">
+                <div class="encyclopedia-image-preview-wrap" id="encyclopediaImagePreviewWrap">
+                    <img class="image-preview" id="currentEntryImagePreview" src="{{ str_starts_with($entry->image_path, 'assets/') ? asset($entry->image_path) : asset('storage/'.$entry->image_path) }}" alt="Current entry image">
+                    <div class="encyclopedia-image-actions" aria-label="Photo actions">
+                        <button type="button" id="updateEntryImage" aria-label="Update photo" title="Update photo">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>
+                            <span>Update</span>
+                        </button>
+                        <button type="button" id="deleteEntryImage" class="is-delete" aria-label="Delete photo" title="Delete photo">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2m3 0-1 14H6L5 6"/><path d="M10 11v5m4-5v5"/></svg>
+                            <span>Delete</span>
+                        </button>
+                    </div>
+                </div>
             @endif
             <label for="sort_order">Display order</label>
             <input id="sort_order" type="number" name="sort_order" min="0" max="9999" value="{{ old('sort_order', $entry?->sort_order ?? 0) }}">
@@ -282,23 +294,35 @@
                 event.returnValue = '';
             });
 
-            const removeImageCheckbox = fallback.form?.querySelector('[name="remove_image"]');
+            const removeImageInput = document.getElementById('removeCurrentImage');
             const removeImageDialog = document.getElementById('removeEntryImageDialog');
             const cancelRemoveImage = document.getElementById('cancelRemoveEntryImage');
             const confirmRemoveImage = document.getElementById('confirmRemoveEntryImage');
-            if (removeImageCheckbox && removeImageDialog) {
-                removeImageCheckbox.addEventListener('change', () => {
-                    if (!removeImageCheckbox.checked) return;
-                    removeImageCheckbox.checked = false;
-                    if (typeof removeImageDialog.showModal === 'function') removeImageDialog.showModal();
+            const deleteImageButton = document.getElementById('deleteEntryImage');
+            const updateImageButton = document.getElementById('updateEntryImage');
+            const imageInput = document.getElementById('image');
+            const imagePreview = document.getElementById('currentEntryImagePreview');
+            if (deleteImageButton && removeImageInput) {
+                deleteImageButton.addEventListener('click', () => {
+                    if (typeof removeImageDialog?.showModal === 'function') removeImageDialog.showModal();
                     else if (window.confirm('Remove the current image when you save this entry?')) {
-                        removeImageCheckbox.checked = true;
+                        removeImageInput.value = '1';
                         markUnsaved();
                     }
                 });
+            }
+            if (updateImageButton && imageInput) updateImageButton.addEventListener('click', () => imageInput.click());
+            imageInput?.addEventListener('change', () => {
+                const file = imageInput.files?.[0];
+                if (!file) return;
+                if (removeImageInput) removeImageInput.value = '0';
+                if (imagePreview) imagePreview.src = URL.createObjectURL(file);
+                markUnsaved();
+            });
+            if (removeImageDialog) {
                 cancelRemoveImage?.addEventListener('click', () => removeImageDialog.close());
                 confirmRemoveImage?.addEventListener('click', () => {
-                    removeImageCheckbox.checked = true;
+                    if (removeImageInput) removeImageInput.value = '1';
                     markUnsaved();
                     removeImageDialog.close();
                 });

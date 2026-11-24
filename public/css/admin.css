@@ -713,6 +713,52 @@ a:focus-visible,button:focus-visible,input:focus-visible {
 
 }
 
+.encyclopedia-image-preview-wrap {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+    margin-top: 8px;
+}
+.encyclopedia-image-preview-wrap .image-preview {
+    display: block;
+    margin: 0;
+}
+.encyclopedia-image-actions {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #1d100bb0;
+    opacity: 0;
+    transition: opacity .18s ease;
+}
+.encyclopedia-image-preview-wrap:hover .encyclopedia-image-actions,
+.encyclopedia-image-preview-wrap:focus-within .encyclopedia-image-actions { opacity: 1; }
+.encyclopedia-image-actions button {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 12px;
+    border: 1px solid #fff8;
+    border-radius: 2px;
+    background: #fffaf3;
+    color: #382116;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+}
+.encyclopedia-image-actions button.is-delete { background: #8e3829; color: #fffaf3; }
+.encyclopedia-image-actions svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+@media (hover: none) {
+    .encyclopedia-image-actions { inset: auto 8px 8px auto; opacity: 1; background: transparent; }
+    .encyclopedia-image-actions button { padding: 9px; }
+    .encyclopedia-image-actions button span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+}
+
 .table-wrap {
 
     overflow-x:auto;
