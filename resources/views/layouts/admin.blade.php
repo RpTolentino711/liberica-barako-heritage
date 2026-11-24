@@ -6,7 +6,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="{{ asset('assets/coffee_Liberica_bean.png') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v=mobile-responsive-1">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v=encyclopedia-1">
 </head>
 <body class="admin-body">
     <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
@@ -21,6 +21,7 @@
         <nav aria-label="Admin navigation">
             <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">◫ &nbsp; Dashboard</a>
             <a href="{{ route('admin.articles') }}" class="{{ request()->routeIs('admin.articles*') ? 'active' : '' }}">☷ &nbsp; Educational Articles</a>
+            <a href="{{ route('admin.encyclopedia') }}" class="{{ request()->routeIs('admin.encyclopedia*') ? 'active' : '' }}">▤ &nbsp; Encyclopedia</a>
             <a href="{{ route('admin.gallery') }}" class="{{ request()->routeIs('admin.gallery*') ? 'active' : '' }}">▣ &nbsp; Photo Gallery</a>
             <a href="{{ route('admin.references') }}" class="{{ request()->routeIs('admin.references*') ? 'active' : '' }}">≡ &nbsp; References</a>
             <a href="{{ route('admin.messages') }}" class="{{ request()->routeIs('admin.messages*') ? 'active' : '' }}">✉ &nbsp; Visitor Messages</a>
@@ -66,6 +67,22 @@
             </div>
         </div>
     </dialog>
+    <dialog id="deleteConfirmDialog" class="delete-confirm-dialog" aria-labelledby="deleteConfirmTitle" aria-describedby="deleteConfirmDescription">
+        <div class="delete-confirm-content">
+            <div class="logout-warning-icon" aria-hidden="true">!</div>
+            <p class="logout-dialog-eyebrow">PLEASE CONFIRM</p>
+            <h2 id="deleteConfirmTitle">Delete this content?</h2>
+            <p id="deleteConfirmDescription">This action cannot be undone.</p>
+            <div class="logout-dialog-actions">
+                <button type="button" class="logout-cancel" id="cancelDeleteDialog">CANCEL</button>
+                <form id="deleteConfirmForm" method="POST" action="#">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="delete-confirm-button">YES, DELETE</button>
+                </form>
+            </div>
+        </div>
+    </dialog>
     <script>
         (() => {
             // Sidebar mobile toggle
@@ -107,6 +124,26 @@
             if (cancelButton && dialog) cancelButton.addEventListener('click', () => dialog.close());
             if (dialog) dialog.addEventListener('click', (event) => {
                 if (event.target === dialog) dialog.close();
+            });
+
+            // Reusable confirmation modal for destructive content actions.
+            const deleteDialog = document.getElementById('deleteConfirmDialog');
+            const deleteForm = document.getElementById('deleteConfirmForm');
+            const deleteTitle = document.getElementById('deleteConfirmTitle');
+            const deleteDescription = document.getElementById('deleteConfirmDescription');
+            const cancelDelete = document.getElementById('cancelDeleteDialog');
+            document.querySelectorAll('[data-confirm-delete]').forEach((button) => {
+                button.addEventListener('click', () => {
+                    deleteForm.action = button.dataset.deleteAction;
+                    deleteTitle.textContent = button.dataset.deleteTitle || 'Delete this content?';
+                    deleteDescription.textContent = button.dataset.deleteDescription || 'This action cannot be undone.';
+                    if (typeof deleteDialog.showModal === 'function') deleteDialog.showModal();
+                    else if (window.confirm(deleteDescription.textContent)) deleteForm.requestSubmit();
+                });
+            });
+            if (cancelDelete && deleteDialog) cancelDelete.addEventListener('click', () => deleteDialog.close());
+            if (deleteDialog) deleteDialog.addEventListener('click', (event) => {
+                if (event.target === deleteDialog) deleteDialog.close();
             });
         })();
     </script>

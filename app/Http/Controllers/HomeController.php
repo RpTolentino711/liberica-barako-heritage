@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Models\{Article, GalleryItem, Reference, Message, Setting};
+use App\Models\{Article, EncyclopediaTopic, GalleryItem, Reference, Message, Setting};
 use Illuminate\Http\Request;
 
 class HomeController extends Controller {
@@ -11,6 +11,7 @@ class HomeController extends Controller {
             'gallery' => GalleryItem::where('is_published', true)->orderBy('sort_order')->orderBy('id')->get(),
             'references' => Reference::where('is_published', true)->orderBy('id')->get(),
             'settings' => Setting::pluck('value', 'key')->all(),
+            'topics' => EncyclopediaTopic::where('is_published', true)->orderBy('sort_order')->orderBy('id')->get(),
         ]);
     }
 

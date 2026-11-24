@@ -1,0 +1,30 @@
+@extends('layouts.admin')
+@section('title', 'Encyclopedia')
+@section('content')
+    <div class="panel-head standalone">
+        <p class="lead">Manage the public encyclopedia topics and the entries readers find inside them.</p>
+        <a href="{{ route('admin.encyclopedia.topics.new') }}" class="primary-button small">+ NEW TOPIC</a>
+    </div>
+    <div class="panel table-wrap">
+        <table>
+            <thead><tr><th>Topic</th><th>Entries</th><th>Status</th><th>Order</th><th>Actions</th></tr></thead>
+            <tbody>
+            @forelse($topics as $topic)
+                <tr>
+                    <td><strong>{{ $topic->name }}</strong><small>{{ $topic->slug }}</small></td>
+                    <td>{{ $topic->entries_count }}</td>
+                    <td><span class="status">{{ $topic->is_published ? 'Published' : 'Draft' }}</span></td>
+                    <td>{{ $topic->sort_order }}</td>
+                    <td class="actions encyclopedia-admin-actions">
+                        <a href="{{ route('admin.encyclopedia.entries', $topic) }}">Manage entries</a>
+                        <a href="{{ route('admin.encyclopedia.topics.edit', $topic) }}">Edit topic</a>
+                        <button type="button" class="danger-button" data-confirm-delete data-delete-action="{{ route('admin.encyclopedia.topics.delete', $topic) }}" data-delete-title="Delete {{ $topic->name }}?" data-delete-description="This will permanently delete this topic and all {{ $topic->entries_count }} entries inside it.">Delete</button>
+                    </td>
+                </tr>
+            @empty
+                <tr><td colspan="5">No encyclopedia topics yet.</td></tr>
+            @endforelse
+            </tbody>
+        </table>
+    </div>
+@endsection

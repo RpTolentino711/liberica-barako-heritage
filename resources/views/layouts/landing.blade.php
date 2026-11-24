@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="{{ asset('assets/coffee_Liberica_bean.png') }}">
-    <link rel="stylesheet" href="{{ asset('css/landing.css') }}?v=mobile-star-mask-2">
+    <link rel="stylesheet" href="{{ asset('css/landing.css') }}?v=encyclopedia-1">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <script defer src="{{ asset('js/landing.js') }}"></script>
     <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -25,18 +25,34 @@
             <span>LIBÉRICA<small>KAPENG BARAKO HERITAGE</small></span>
         </a>
         <nav class="desktop-nav" aria-label="Main navigation">
-            <a href="#heritage">Our Heritage</a>
-            <a href="#journey">Bean to Cup</a>
-            <a href="#culture">Coffee Culture</a>
-            <a href="#gallery">Gallery</a>
-            <a href="#heritage-collection">Collection</a>
-            <a href="#farm-map">Farm Map</a>
+            <a href="{{ route('home') }}#heritage">Our Heritage</a>
+            <a href="{{ route('home') }}#journey">Bean to Cup</a>
+            <a href="{{ route('home') }}#culture">Coffee Culture</a>
+            <details class="nav-dropdown">
+                <summary>Encyclopedia</summary>
+                <div class="nav-dropdown-menu">
+                    <a href="{{ route('encyclopedia.index') }}">All topics</a>
+                    @foreach(($navTopics ?? $topics ?? collect()) as $topic)
+                        <a href="{{ route('encyclopedia.topic', $topic->slug) }}">{{ $topic->name }}</a>
+                    @endforeach
+                </div>
+            </details>
+            <a href="{{ route('home') }}#gallery">Gallery</a>
+            <a href="{{ route('home') }}#heritage-collection">Collection</a>
+            <a href="{{ route('home') }}#farm-map">Farm Map</a>
         </nav>
-        <a class="header-link" href="#references">OUR SOURCES <span aria-hidden="true">↗</span></a>
+        <a class="header-link" href="{{ route('home') }}#references">OUR SOURCES <span aria-hidden="true">↗</span></a>
         <button class="menu-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span></button>
     </header>
     <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation" hidden>
-        <a href="#heritage">Our Heritage</a><a href="#discover">Discover Liberica</a><a href="#journey">Bean to Cup</a><a href="#culture">Coffee Culture</a><a href="#gallery">Gallery</a><a href="#heritage-collection">Collection</a><a href="#farm-map">Farm Map</a><a href="#references">Sources</a><a href="#contact">Contact</a>
+        <a href="{{ route('home') }}#heritage">Our Heritage</a><a href="{{ route('home') }}#discover">Discover Liberica</a><a href="{{ route('home') }}#journey">Bean to Cup</a><a href="{{ route('home') }}#culture">Coffee Culture</a>
+        <details class="mobile-encyclopedia-menu"><summary>Encyclopedia</summary>
+            <a href="{{ route('encyclopedia.index') }}">All topics</a>
+            @foreach(($navTopics ?? $topics ?? collect()) as $topic)
+                <a href="{{ route('encyclopedia.topic', $topic->slug) }}">{{ $topic->name }}</a>
+            @endforeach
+        </details>
+        <a href="{{ route('home') }}#gallery">Gallery</a><a href="{{ route('home') }}#heritage-collection">Collection</a><a href="{{ route('home') }}#farm-map">Farm Map</a><a href="{{ route('home') }}#references">Sources</a><a href="{{ route('home') }}#contact">Contact</a>
     </nav>
     <main id="main">@yield('content')</main>
     <footer class="footer">

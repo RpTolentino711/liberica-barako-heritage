@@ -7,6 +7,7 @@ This project intentionally does not share the original LIBÉRICA shop-themed pro
 ## Structure
 
 - `resources/views/landing/index.blade.php` — full public homepage
+- `resources/views/encyclopedia/` — public topic index, topic pages, and entries
 - `resources/views/layouts/landing.blade.php` — public header/footer
 - `resources/views/admin/` — login, dashboard, articles, gallery, references, messages, settings
 - `resources/views/layouts/admin.blade.php` — shared admin shell
@@ -33,6 +34,7 @@ This project intentionally does not share the original LIBÉRICA shop-themed pro
 
 - Dashboard: counts + recent contact messages
 - Articles: CRUD and publish/unpublish; plain text content is safely escaped and displayed with paragraph breaks
+- Encyclopedia: manage public topics and their entries; deleting a topic also deletes its entries after confirmation
 - Gallery: image upload, caption, credit, delete
 - References: link, publisher, note, delete
 - Messages: view and update status

@@ -1,7 +1,7 @@
 <?php
 namespace Database\Seeders;
 
-use App\Models\{Article, Reference, Setting, User};
+use App\Models\{Article, EncyclopediaTopic, Reference, Setting, User};
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -16,6 +16,20 @@ class DatabaseSeeder extends Seeder {
             'contact_email'=>'',
         ];
         foreach ($values as $key=>$value) Setting::firstOrCreate(['key'=>$key],['value'=>$value]);
+        $topics = [
+            ['History of Philippine Coffee', 'history-of-philippine-coffee', 'The history of coffee in the Philippines, with special attention to Batangas and Lipa.'],
+            ['The Science of Liberica', 'the-science-of-liberica', 'Botany, cultivation, processing, and the science behind Coffea liberica.'],
+            ['Culture and Heritage', 'culture-and-heritage', 'The people, traditions, language, and coffee practices connected to Batangas.'],
+            ['Diseases', 'diseases', 'Coffee plant diseases, identification, prevention, and responsible management.'],
+        ];
+        foreach ($topics as $i => [$name, $slug, $description]) {
+            EncyclopediaTopic::firstOrCreate(['slug' => $slug], [
+                'name' => $name,
+                'description' => $description,
+                'is_published' => true,
+                'sort_order' => $i + 1,
+            ]);
+        }
         $articles = [
             ['heritage','The coffee legacy of Lipa','Lipa grew into a major coffee-trading town in the nineteenth century.','Lipa’s coffee trade reached extraordinary prominence in the nineteenth century. The City Government of Lipa describes the town’s prosperity and its elevation to Villa de Lipa on October 21, 1887. Plant disease struck its coffee plantations soon afterward, changing the region’s economic story. This history helps explain why coffee remains so deeply tied to Lipa’s identity.'],
             ['botany','What makes Liberica distinctive?','Large leaves, large beans, and an expressive character make Liberica memorable.','Coffea liberica is a coffee species native to parts of West and Central Africa and cultivated in the Philippines and other tropical countries. Compared with more familiar commercial coffees, Liberica is known for its relatively large beans, leaves, and tree stature. In the Philippines, it is strongly associated with Kapeng Barako. Exact flavors depend on cultivar, farm, processing, roast, and brewing.'],
