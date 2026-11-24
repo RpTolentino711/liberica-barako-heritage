@@ -20,6 +20,8 @@
 
     --sans: "DM Sans",Arial,sans-serif;
 
+    --heritage-star: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='black' d='M44 2h12v34l24-24 8 8-24 24h34v12H64l24 24-8 8-24-24v34H44V64L20 88l-8-8 24-24H2V44h34L12 20l8-8 24 24z'/%3E%3C/svg%3E");
+
 }
 
 * {
@@ -722,13 +724,23 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible 
 
 .ticker b {
 
-    font-size: 19px;
+    display: inline-block;
+
+    width: 13px;
+
+    height: 13px;
+
+    font-size: 0;
 
     font-weight: 400;
 
     margin: 0 45px;
 
-    font-family: "Segoe UI Symbol", "Apple Symbols", serif;
+    background-color: currentColor;
+
+    -webkit-mask: var(--heritage-star) center / contain no-repeat;
+
+    mask: var(--heritage-star) center / contain no-repeat;
 
 }
 
@@ -1150,15 +1162,21 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible 
 
 .step-icon {
 
-    color: #e2b780;
+    width: 42px;
 
-    font-size: 42px;
+    height: 42px;
+
+    flex: 0 0 42px;
+
+    font-size: 0;
 
     margin: 0 0 18px;
 
-    line-height: 1;
+    background-color: #e2b780;
 
-    font-family: "Segoe UI Symbol", "Apple Symbols", serif;
+    -webkit-mask: var(--heritage-star) center / contain no-repeat;
+
+    mask: var(--heritage-star) center / contain no-repeat;
 
 }
 
@@ -1286,7 +1304,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible 
 
     position: absolute;
 
-    font-size: 300px;
+    width: 300px;
+
+    height: 300px;
+
+    font-size: 0;
 
     line-height: 1;
 
@@ -1294,11 +1316,16 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible 
 
     right: -10px;
 
-    color: #fff5eb09;
+    background-color: #fff5eb;
+
+    opacity: .035;
 
     pointer-events: none;
 
-    font-family: "Segoe UI Symbol", "Apple Symbols", serif;
+
+    -webkit-mask: var(--heritage-star) center / contain no-repeat;
+
+    mask: var(--heritage-star) center / contain no-repeat;
 
 }
 
@@ -1352,11 +1379,17 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible 
 
 }
 
-.story-card-top span:last-child {
+.story-card-top .story-mark {
 
-    font-size: 24px;
+    width: 18px;
 
-    font-family: "Segoe UI Symbol", "Apple Symbols", serif;
+    height: 18px;
+
+    background-color: #a67b4f;
+
+    -webkit-mask: var(--heritage-star) center / contain no-repeat;
+
+    mask: var(--heritage-star) center / contain no-repeat;
 
 }
 

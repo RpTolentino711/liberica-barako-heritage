@@ -44,7 +44,7 @@
 
 </section>
 
-<div class="ticker" aria-label="Coffee heritage values"><div>LIBERICA COFFEE <b>✳︎</b> BATANGAS HERITAGE <b>✳︎</b> CULTIVATION <b>✳︎</b> COMMUNITY <b>✳︎</b> LIBERICA COFFEE <b>✳︎</b> BATANGAS HERITAGE <b>✳︎</b> CULTIVATION <b>✳︎</b> COMMUNITY <b>✳︎</b></div></div>
+<div class="ticker" aria-label="Coffee heritage values"><div>LIBERICA COFFEE <b aria-hidden="true"></b> BATANGAS HERITAGE <b aria-hidden="true"></b> CULTIVATION <b aria-hidden="true"></b> COMMUNITY <b aria-hidden="true"></b> LIBERICA COFFEE <b aria-hidden="true"></b> BATANGAS HERITAGE <b aria-hidden="true"></b> CULTIVATION <b aria-hidden="true"></b> COMMUNITY <b aria-hidden="true"></b></div></div>
 
 
 
@@ -182,7 +182,7 @@
 
         <article><span>03</span><div class="step-icon">◒</div><h3>Processing</h3><p>Fruit removal, drying, and hulling prepare the green coffee beans.</p></article>
 
-        <article><span>04</span><div class="step-icon">✳︎</div><h3>Roasting & brewing</h3><p>Roast development, grind, and preparation influence aroma and taste.</p></article>
+        <article><span>04</span><div class="step-icon" aria-hidden="true"></div><h3>Roasting & brewing</h3><p>Roast development, grind, and preparation influence aroma and taste.</p></article>
 
     </div>
 
@@ -192,7 +192,7 @@
 
 {{-- 05 · COFFEE CULTURE --}}
 
-<section id="culture" class="culture-section"><div class="culture-image" aria-hidden="true"></div><div class="culture-copy"><div class="section-number">05 / CULTURE & CONNECTION</div><div class="eyebrow gold">THE BEAUTY OF SLOWING DOWN</div><h2>Make space<br>for the <em>moment.</em></h2><p>From quiet mornings to shared conversations, Kapeng Barako has a place in the everyday stories of Batangas. Its meaning is held not just in the cup, but in the people who keep its traditions alive.</p><a class="btn outline" href="#stories">EXPLORE THE STORIES ↗</a><div class="decor" aria-hidden="true">✳︎</div></div></section>
+<section id="culture" class="culture-section"><div class="culture-image" aria-hidden="true"></div><div class="culture-copy"><div class="section-number">05 / CULTURE & CONNECTION</div><div class="eyebrow gold">THE BEAUTY OF SLOWING DOWN</div><h2>Make space<br>for the <em>moment.</em></h2><p>From quiet mornings to shared conversations, Kapeng Barako has a place in the everyday stories of Batangas. Its meaning is held not just in the cup, but in the people who keep its traditions alive.</p><a class="btn outline" href="#stories">EXPLORE THE STORIES ↗</a><div class="decor" aria-hidden="true"></div></div></section>
 
 
 
@@ -206,7 +206,7 @@
 
             <article class="story-card" id="story-{{ $article->slug }}">
 
-                <div class="story-card-top"><span>{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }} / {{ strtoupper($article->category) }}</span><span>✳︎</span></div>
+                <div class="story-card-top"><span>{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }} / {{ strtoupper($article->category) }}</span><span class="story-mark" aria-hidden="true"></span></div>
 
                 @if($article->image_path)<img src="{{ asset('storage/'.$article->image_path) }}" alt="{{ $article->title }}" loading="lazy">@endif
 
