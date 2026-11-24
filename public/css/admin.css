@@ -1414,6 +1414,23 @@ td small {
 
 .encyclopedia-admin-actions { flex-wrap: wrap; gap: 8px 14px; }
 .encyclopedia-admin-actions a { white-space: nowrap; }
+.encyclopedia-entry-count { display: inline-flex; align-items: center; gap: 7px; color: #704a2c; font-weight: 700; }
+.encyclopedia-entry-count span { font-size: 8px; letter-spacing: .12em; }
+.encyclopedia-admin-actions .encyclopedia-action-manage,
+.encyclopedia-entry-edit {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 0 10px;
+    border: 1px solid #cbb69f;
+    background: #f5ede3;
+    color: #704a2c;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .04em;
+}
+.encyclopedia-admin-actions .encyclopedia-action-manage:hover,
+.encyclopedia-entry-edit:hover { background: #ead8c5; }
 .danger-button {
     border: 0;
     padding: 0;

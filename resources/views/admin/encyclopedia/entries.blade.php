@@ -2,7 +2,7 @@
 @section('title', $topic->name)
 @section('content')
     <div class="panel-head standalone">
-        <p class="lead">Manage the encyclopedia entries shown inside <strong>{{ $topic->name }}</strong>.</p>
+        <p class="lead"><strong>{{ $entries->count() }} {{ \Illuminate\Support\Str::plural('entry', $entries->count()) }}</strong> in {{ $topic->name }}. Edit or delete an individual entry below, or add another one.</p>
         <a href="{{ route('admin.encyclopedia.entries.new', $topic) }}" class="primary-button small">+ NEW ENTRY</a>
     </div>
     <p class="encyclopedia-admin-back"><a href="{{ route('admin.encyclopedia') }}">← All encyclopedia topics</a></p>
@@ -16,7 +16,7 @@
                     <td><span class="status">{{ $entry->is_published ? 'Published' : 'Draft' }}</span></td>
                     <td>{{ $entry->sort_order }}</td>
                     <td class="actions">
-                        <a href="{{ route('admin.encyclopedia.entries.edit', [$topic, $entry]) }}">Edit</a>
+                        <a class="encyclopedia-entry-edit" href="{{ route('admin.encyclopedia.entries.edit', [$topic, $entry]) }}">EDIT ENTRY</a>
                         <button type="button" class="danger-button" data-confirm-delete data-delete-action="{{ route('admin.encyclopedia.entries.delete', [$topic, $entry]) }}" data-delete-title="Delete {{ $entry->title }}?" data-delete-description="This encyclopedia entry will be permanently deleted.">Delete</button>
                     </td>
                 </tr>
