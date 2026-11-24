@@ -1240,8 +1240,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible 
 .journey-carousel-dots button { width: 23px; height: 3px; padding: 0; border: 0; background: #cfbba5; cursor: pointer; transition: width .2s ease, background .2s ease; }
 .journey-carousel-dots button[aria-current="step"] { width: 42px; background: #9b6338; }
 .journey-carousel-status { min-width: 60px; color: #76583f; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-align: center; }
-.journey-carousel-toggle { padding: 9px 12px; border: 1px solid #bda184; background: transparent; color: #513a28; font: 600 11px/1.2 var(--sans); cursor: pointer; }
-.journey-carousel-toggle:hover { background: #2b1910; color: #fff5e8; }
 .journey-carousel button:focus-visible { outline: 2px solid #9b6338; outline-offset: 3px; }
 @media (max-width: 700px) {
     .journey-carousel { margin-top: 35px; }
@@ -1257,7 +1255,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible 
     .journey-carousel-dots { gap: 6px; margin-left: auto; }
     .journey-carousel-dots button { width: 14px; }
     .journey-carousel-dots button[aria-current="step"] { width: 27px; }
-    .journey-carousel-toggle { padding: 9px 8px; font-size: 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
     .journey-carousel-track,.journey-carousel-arrow,.journey-carousel-dots button { transition: none; }

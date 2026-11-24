@@ -206,7 +206,6 @@
                     @endforeach
                 </div>
                 <span class="journey-carousel-status" aria-live="polite"><span data-journey-current>01</span> / {{ str_pad($journeySteps->count(), 2, '0', STR_PAD_LEFT) }}</span>
-                <button type="button" class="journey-carousel-toggle" data-journey-toggle aria-pressed="true">Pause autoplay</button>
                 <button type="button" class="journey-carousel-arrow" data-journey-next aria-label="Next step">&#8594;</button>
             </div>
         </div>

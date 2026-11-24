@@ -6,7 +6,6 @@
         const next = carousel.querySelector('[data-journey-next]');
         const dots = [...carousel.querySelectorAll('[data-journey-dot]')];
         const current = carousel.querySelector('[data-journey-current]');
-        const toggle = carousel.querySelector('[data-journey-toggle]');
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
         const pauseReasons = new Set();
         let activeIndex = 0;
@@ -14,12 +13,6 @@
         let timer = null;
 
         if (!track || slides.length === 0) return;
-
-        const syncToggle = () => {
-            if (!toggle) return;
-            toggle.textContent = autoplayEnabled ? 'Pause autoplay' : 'Play autoplay';
-            toggle.setAttribute('aria-pressed', String(autoplayEnabled));
-        };
 
         const scheduleAutoplay = () => {
             window.clearInterval(timer);
@@ -49,12 +42,6 @@
         previous?.addEventListener('click', () => showStep(activeIndex - 1));
         next?.addEventListener('click', () => showStep(activeIndex + 1));
         dots.forEach((dot) => dot.addEventListener('click', () => showStep(Number(dot.dataset.journeyDot))));
-        toggle?.addEventListener('click', () => {
-            autoplayEnabled = !autoplayEnabled;
-            syncToggle();
-            scheduleAutoplay();
-        });
-
         carousel.addEventListener('pointerenter', () => { pauseReasons.add('pointer'); scheduleAutoplay(); });
         carousel.addEventListener('pointerleave', () => { pauseReasons.delete('pointer'); scheduleAutoplay(); });
         carousel.addEventListener('focusin', () => { pauseReasons.add('focus'); scheduleAutoplay(); });
@@ -80,7 +67,6 @@
             if (event.key === 'ArrowRight') { event.preventDefault(); showStep(activeIndex + 1); }
         });
 
-        syncToggle();
         showStep(0);
     });
 })();
