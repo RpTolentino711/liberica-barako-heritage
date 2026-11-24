@@ -183,12 +183,14 @@
             <div class="journey-carousel-window" tabindex="0" aria-label="Use arrow keys to browse Bean to Cup steps">
                 <div class="journey-carousel-track">
                     @foreach($journeySteps as $step)
-                        @php($journeyImage = match ($step->media_path) {
-                            'assets/pexels-carlostorres-18505518.jpg' => 'assets/pexels-carlostorres-18505518-carousel.jpg',
-                            'assets/pexels-michael-burrows-7125451.jpg' => 'assets/pexels-michael-burrows-7125451-carousel.jpg',
-                            default => $step->media_path,
-                        })
-                        @php($journeyMediaUrl = str_starts_with($journeyImage, 'assets/') ? asset($journeyImage) : asset('storage/'.$step->media_path))
+                        @php
+                            $journeyImage = match ($step->media_path) {
+                                'assets/pexels-carlostorres-18505518.jpg' => 'assets/pexels-carlostorres-18505518-carousel.jpg',
+                                'assets/pexels-michael-burrows-7125451.jpg' => 'assets/pexels-michael-burrows-7125451-carousel.jpg',
+                                default => $step->media_path,
+                            };
+                            $journeyMediaUrl = str_starts_with($journeyImage, 'assets/') ? asset($journeyImage) : asset('storage/'.$step->media_path);
+                        @endphp
                         <article class="journey-slide" aria-roledescription="slide" aria-label="Step {{ $loop->iteration }} of {{ $journeySteps->count() }}" aria-hidden="{{ $loop->first ? 'false' : 'true' }}">
                             <div class="journey-slide-media">
                                 @if($step->media_type === 'video')
