@@ -1414,13 +1414,10 @@ td small {
 
 .encyclopedia-admin-actions { flex-wrap: wrap; gap: 8px 14px; }
 .encyclopedia-admin-actions a { white-space: nowrap; }
-.encyclopedia-entry-count { display: inline-flex; align-items: center; gap: 7px; color: #704a2c; font-weight: 700; }
-.encyclopedia-entry-count span { font-size: 8px; letter-spacing: .12em; }
 .encyclopedia-topic-title-link { color: #281b14; text-decoration: underline; text-decoration-color: #d9c5ad; text-underline-offset: 4px; }
 .encyclopedia-topic-title-link:hover { color: #8b572f; text-decoration-color: currentColor; }
 .encyclopedia-topic-entries-head { margin-top: 34px; }
 .encyclopedia-topic-entries-head .lead { max-width: 760px; }
-.encyclopedia-admin-actions .encyclopedia-action-manage,
 .encyclopedia-entry-edit {
     display: inline-flex;
     align-items: center;
@@ -1433,7 +1430,6 @@ td small {
     font-weight: 700;
     letter-spacing: .04em;
 }
-.encyclopedia-admin-actions .encyclopedia-action-manage:hover,
 .encyclopedia-entry-edit:hover { background: #ead8c5; }
 .entry-publication-toggle {
     display: inline-flex;
