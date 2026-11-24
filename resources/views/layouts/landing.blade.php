@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="{{ asset('assets/coffee_Liberica_bean.png') }}">
-    <link rel="stylesheet" href="{{ asset('css/landing.css') }}?v=encyclopedia-images-3">
+    <link rel="stylesheet" href="{{ asset('css/landing.css') }}?v=encyclopedia-article-4">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <script defer src="{{ asset('js/landing.js') }}"></script>
     <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
