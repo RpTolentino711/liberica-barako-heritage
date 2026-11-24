@@ -17,7 +17,7 @@
             <textarea id="body" name="body" maxlength="30000" rows="14" required>{{ old('body', $entry?->body) }}</textarea>
             <div class="encyclopedia-editor-actions">
                 <button class="button-alt" id="addEncyclopediaSection" type="button">+ ADD MORE</button>
-                <p class="encyclopedia-editor-note">The article source below applies to the main content. Each additional section can have its own optional source name and URL, shown beneath that section. Save Entry after removing a section; refreshing before saving restores the saved section.</p>
+                <p class="encyclopedia-editor-note">The article source below applies to the main content. Each additional section can have its own optional source name and URL, shown beneath that section. Confirming section deletion saves the article immediately.</p>
             </div>
             <div class="two-col">
                 <div><label for="source_label">Source name</label><input id="source_label" name="source_label" maxlength="240" value="{{ old('source_label', $entry?->source_label) }}" placeholder="Department of Agriculture"></div>
@@ -52,7 +52,7 @@
             <div class="logout-warning-icon" aria-hidden="true">!</div>
             <p class="logout-dialog-eyebrow">PLEASE CONFIRM</p>
             <h2 id="removeEncyclopediaSectionTitle">Delete this section?</h2>
-            <p id="removeEncyclopediaSectionDescription">Are you sure you want to delete this content? It will be permanently removed from the article after you click Save Entry.</p>
+            <p id="removeEncyclopediaSectionDescription">Are you sure you want to delete this content? Confirming will save the article immediately, including any other unsaved edits.</p>
             <div class="logout-dialog-actions">
                 <button type="button" class="logout-cancel" id="cancelRemoveEncyclopediaSection">CANCEL</button>
                 <button type="button" class="delete-confirm-button" id="confirmRemoveEncyclopediaSection">YES, DELETE SECTION</button>
@@ -184,11 +184,12 @@
                         sectionPendingRemoval = section;
                         if (removeSectionDialog && typeof removeSectionDialog.showModal === 'function') {
                             removeSectionDialog.showModal();
-                        } else if (window.confirm('Are you sure you want to delete this content? It will be removed after you click Save Entry.')) {
+                        } else if (window.confirm('Are you sure you want to delete this content? Confirming will save the article immediately, including any other unsaved edits.')) {
                             section.remove();
                             syncBody();
                             if (sectionRemovedInput) sectionRemovedInput.value = '1';
                             markUnsaved();
+                            fallback.form?.requestSubmit();
                             sectionPendingRemoval = null;
                         }
                     });
@@ -271,7 +272,7 @@
                 syncBody();
                 if (sectionRemovedInput) sectionRemovedInput.value = '1';
                 markUnsaved();
-                removeSectionDialog.close();
+                fallback.form?.requestSubmit();
             });
             removeSectionDialog?.addEventListener('click', (event) => {
                 if (event.target === removeSectionDialog) {
