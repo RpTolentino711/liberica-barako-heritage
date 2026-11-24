@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\JourneyStep;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class AdminJourneyStepController extends Controller
@@ -32,6 +33,32 @@ class AdminJourneyStepController extends Controller
     {
         $this->guard();
         return view('admin.journey.form', compact('step'));
+    }
+
+    public function reorder(Request $request)
+    {
+        $this->guard();
+        $data = $request->validate([
+            'steps' => ['required', 'array'],
+            'steps.*' => ['required', 'integer', 'distinct', 'exists:journey_steps,id'],
+        ]);
+
+        $ids = array_map('intval', $data['steps']);
+        $expectedIds = JourneyStep::orderBy('id')->pluck('id')->map(fn ($id) => (int) $id)->all();
+        $submittedIds = $ids;
+        sort($expectedIds);
+        sort($submittedIds);
+        if ($submittedIds !== $expectedIds) {
+            return response()->json(['message' => 'The step list changed. Refresh and try again.'], 409);
+        }
+
+        DB::transaction(function () use ($ids) {
+            foreach ($ids as $position => $id) {
+                JourneyStep::whereKey($id)->update(['sort_order' => $position + 1]);
+            }
+        });
+
+        return response()->json(['message' => 'Bean to Cup order saved.']);
     }
 
     public function save(Request $request, ?JourneyStep $step = null)

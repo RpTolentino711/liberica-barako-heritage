@@ -722,6 +722,15 @@ a:focus-visible,button:focus-visible,input:focus-visible {
 .journey-admin-help { margin: 8px 0 18px; color: #725f4f; font-size: 13px; line-height: 1.6; }
 .journey-admin-current-media { width: min(460px, 100%); margin: 15px 0 24px; border: 1px solid var(--border); background: #1d110b; }
 .journey-admin-current-media img,.journey-admin-current-media video { display: block; width: 100%; max-height: 330px; object-fit: contain; }
+.journey-order-status { margin: -8px 0 14px; color: #725f4f; font-size: 13px; }
+.journey-step-row-title { display: flex; align-items: center; gap: 12px; min-width: 220px; }
+.journey-drag-handle { flex: 0 0 34px; width: 34px; height: 38px; border: 1px solid var(--border); background: #f5ece1; color: #805735; font-size: 19px; cursor: grab; touch-action: none; }
+.journey-drag-handle:active { cursor: grabbing; }
+.journey-drag-handle:focus-visible,.journey-order-controls button:focus-visible { outline: 2px solid #9b6338; outline-offset: 2px; }
+.journey-order-controls { display: flex; align-items: center; gap: 6px; }
+.journey-order-controls button { width: 27px; height: 27px; border: 1px solid var(--border); background: #fffaf5; color: #694529; cursor: pointer; }
+#journeyStepRows tr.is-dragging { opacity: .45; }
+#journeyStepRows tr.is-drop-target td { border-top: 2px solid #9b6338; }
 .encyclopedia-image-preview-wrap .image-preview {
     display: block;
     margin: 0;

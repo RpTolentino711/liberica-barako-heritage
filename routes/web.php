@@ -37,6 +37,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::delete('/articles/{article}',[AdminController::class,'deleteArticle'])->name('articles.delete');
     Route::get('/encyclopedia', [AdminEncyclopediaController::class, 'index'])->name('encyclopedia');
     Route::get('/bean-to-cup', [AdminJourneyStepController::class, 'index'])->name('journey.index');
+    Route::patch('/bean-to-cup/reorder', [AdminJourneyStepController::class, 'reorder'])->name('journey.reorder');
     Route::get('/bean-to-cup/new', [AdminJourneyStepController::class, 'create'])->name('journey.create');
     Route::post('/bean-to-cup', [AdminJourneyStepController::class, 'save'])->name('journey.store');
     Route::get('/bean-to-cup/{step}/edit', [AdminJourneyStepController::class, 'edit'])->name('journey.edit');
