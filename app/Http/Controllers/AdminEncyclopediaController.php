@@ -22,14 +22,14 @@ class AdminEncyclopediaController extends Controller
 
     private function validateSectionSources(string $body): void
     {
-        preg_match_all('/@+ENCYCLOPEDIA_SOURCE:[^\r\n]*?@+/', $body, $allMarkers);
-        preg_match_all('/^@+ENCYCLOPEDIA_SOURCE:([A-Za-z0-9+\/=]+)@+$/m', $body, $validMarkers);
+        preg_match_all('/^@+ENCYCLOPEDIA_SOURCE:[^\r\n]*?@+[ \t]*\r?$/m', $body, $allMarkers);
+        preg_match_all('/^@+ENCYCLOPEDIA_SOURCE:([A-Za-z0-9+\/=]+)@+[ \t]*\r?$/m', $body, $validMarkers);
         if (count($allMarkers[0]) !== count($validMarkers[1])) {
             throw ValidationException::withMessages(['body' => 'A section source could not be read. Please check its source name and URL.']);
         }
 
         $articleText = preg_replace('/^## [^\r\n]*\s*(?:\r?\n|$)/m', '', $body) ?? $body;
-        $articleText = preg_replace('/^@+ENCYCLOPEDIA_SOURCE:[^\r\n]*?@+\s*(?:\r?\n|$)/m', '', $articleText) ?? $articleText;
+        $articleText = preg_replace('/^@+ENCYCLOPEDIA_SOURCE:[^\r\n]*?@+[ \t]*\r?\n?/m', '', $articleText) ?? $articleText;
         if (trim($articleText) === '') {
             throw ValidationException::withMessages(['body' => 'Add some article text before saving.']);
         }
