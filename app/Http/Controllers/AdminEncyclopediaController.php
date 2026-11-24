@@ -148,4 +148,15 @@ class AdminEncyclopediaController extends Controller
 
         return back()->with('ok', 'Encyclopedia entry deleted.');
     }
+
+    public function toggleEntryPublication(EncyclopediaTopic $topic, EncyclopediaEntry $entry)
+    {
+        $this->guard();
+        abort_unless($entry->topic_id === $topic->id, 404);
+
+        $entry->update(['is_published' => !$entry->is_published]);
+        $status = $entry->is_published ? 'published' : 'unpublished';
+
+        return back()->with('ok', 'Encyclopedia entry '.$status.'.');
+    }
 }

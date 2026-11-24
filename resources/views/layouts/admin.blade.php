@@ -6,7 +6,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="{{ asset('assets/coffee_Liberica_bean.png') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v=encyclopedia-topic-workspace-4">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v=encyclopedia-publication-5">
 </head>
 <body class="admin-body">
     <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
@@ -83,6 +83,22 @@
             </div>
         </div>
     </dialog>
+    <dialog id="publicationConfirmDialog" class="delete-confirm-dialog" aria-labelledby="publicationConfirmTitle" aria-describedby="publicationConfirmDescription">
+        <div class="delete-confirm-content">
+            <div class="logout-warning-icon" aria-hidden="true">?</div>
+            <p class="logout-dialog-eyebrow">PUBLICATION STATUS</p>
+            <h2 id="publicationConfirmTitle">Unpublish this article?</h2>
+            <p id="publicationConfirmDescription">The article will no longer appear on the public encyclopedia.</p>
+            <div class="logout-dialog-actions">
+                <button type="button" class="logout-cancel" id="cancelPublicationDialog">CANCEL</button>
+                <form id="publicationConfirmForm" method="POST" action="#">
+                    @csrf
+                    @method('PATCH')
+                    <button type="submit" class="publication-confirm-button" id="confirmPublicationButton">YES, UNPUBLISH</button>
+                </form>
+            </div>
+        </div>
+    </dialog>
     <script>
         (() => {
             // Sidebar mobile toggle
@@ -144,6 +160,32 @@
             if (cancelDelete && deleteDialog) cancelDelete.addEventListener('click', () => deleteDialog.close());
             if (deleteDialog) deleteDialog.addEventListener('click', (event) => {
                 if (event.target === deleteDialog) deleteDialog.close();
+            });
+
+            // Confirm before changing an encyclopedia entry's public visibility.
+            const publicationDialog = document.getElementById('publicationConfirmDialog');
+            const publicationForm = document.getElementById('publicationConfirmForm');
+            const publicationTitle = document.getElementById('publicationConfirmTitle');
+            const publicationDescription = document.getElementById('publicationConfirmDescription');
+            const publicationSubmit = document.getElementById('confirmPublicationButton');
+            const cancelPublication = document.getElementById('cancelPublicationDialog');
+            document.querySelectorAll('[data-confirm-publication]').forEach((button) => {
+                button.addEventListener('click', () => {
+                    const isPublished = button.dataset.entryPublished === '1';
+                    const entryTitle = button.dataset.entryTitle || 'this article';
+                    publicationForm.action = button.dataset.publicationAction;
+                    publicationTitle.textContent = isPublished ? 'Are you sure you want to unpublish this article?' : 'Publish this article?';
+                    publicationDescription.textContent = isPublished
+                        ? `“${entryTitle}” will be hidden from public encyclopedia pages and remain available in admin.`
+                        : `“${entryTitle}” will become visible on the public encyclopedia.`;
+                    publicationSubmit.textContent = isPublished ? 'YES, UNPUBLISH' : 'YES, PUBLISH';
+                    if (typeof publicationDialog.showModal === 'function') publicationDialog.showModal();
+                    else if (window.confirm(publicationDescription.textContent)) publicationForm.requestSubmit();
+                });
+            });
+            if (cancelPublication && publicationDialog) cancelPublication.addEventListener('click', () => publicationDialog.close());
+            if (publicationDialog) publicationDialog.addEventListener('click', (event) => {
+                if (event.target === publicationDialog) publicationDialog.close();
             });
         })();
     </script>

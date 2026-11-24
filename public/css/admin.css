@@ -1435,6 +1435,31 @@ td small {
 }
 .encyclopedia-admin-actions .encyclopedia-action-manage:hover,
 .encyclopedia-entry-edit:hover { background: #ead8c5; }
+.entry-publication-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border: 0;
+    border-radius: 3px;
+    font: inherit;
+    cursor: pointer;
+}
+.entry-publication-toggle span { font-size: 10px; }
+.entry-publication-toggle.is-published { color: #4d3824; background: #efe2d1; }
+.entry-publication-toggle.is-draft { color: #675a4c; background: #e8e5e0; }
+.entry-publication-toggle:hover { box-shadow: inset 0 0 0 1px #ab8058; }
+.publication-confirm-button {
+    border: 0;
+    padding: 12px 18px;
+    background: #291a12;
+    color: #fff8ef;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    cursor: pointer;
+}
+.publication-confirm-button:hover { background: #704a2c; }
 .danger-button {
     border: 0;
     padding: 0;

@@ -29,7 +29,11 @@
                 @forelse($entries as $entry)
                     <tr>
                         <td><strong>{{ $entry->title }}</strong><small>{{ $entry->summary }}</small></td>
-                        <td><span class="status">{{ $entry->is_published ? 'Published' : 'Draft' }}</span></td>
+                        <td>
+                            <button type="button" class="entry-publication-toggle {{ $entry->is_published ? 'is-published' : 'is-draft' }}" data-confirm-publication data-publication-action="{{ route('admin.encyclopedia.entries.publication', [$topic, $entry]) }}" data-entry-title="{{ $entry->title }}" data-entry-published="{{ $entry->is_published ? '1' : '0' }}">
+                                {{ $entry->is_published ? 'Published' : 'Draft' }} <span aria-hidden="true">⌄</span>
+                            </button>
+                        </td>
                         <td>{{ $entry->sort_order }}</td>
                         <td class="actions">
                             <a class="encyclopedia-entry-edit" href="{{ route('admin.encyclopedia.entries.edit', [$topic, $entry]) }}">EDIT ENTRY</a>

@@ -46,6 +46,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::get('/encyclopedia/topics/{topic}/entries/{entry}/edit', [AdminEncyclopediaController::class, 'editEntry'])->scopeBindings()->name('encyclopedia.entries.edit');
     Route::put('/encyclopedia/topics/{topic}/entries/{entry}', [AdminEncyclopediaController::class, 'saveEntry'])->scopeBindings()->name('encyclopedia.entries.update');
     Route::delete('/encyclopedia/topics/{topic}/entries/{entry}', [AdminEncyclopediaController::class, 'deleteEntry'])->scopeBindings()->name('encyclopedia.entries.delete');
+    Route::patch('/encyclopedia/topics/{topic}/entries/{entry}/publication', [AdminEncyclopediaController::class, 'toggleEntryPublication'])->scopeBindings()->name('encyclopedia.entries.publication');
     Route::get('/gallery',[AdminController::class,'gallery'])->name('gallery');
     Route::post('/gallery',[AdminController::class,'saveGallery'])->name('gallery.store');
     Route::delete('/gallery/{item}',[AdminController::class,'deleteGallery'])->name('gallery.delete');
