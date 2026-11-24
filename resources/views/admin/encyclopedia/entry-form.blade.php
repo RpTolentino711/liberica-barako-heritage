@@ -16,7 +16,7 @@
             <textarea id="body" name="body" maxlength="30000" rows="14" required>{{ old('body', $entry?->body) }}</textarea>
             <div class="encyclopedia-editor-actions">
                 <button class="button-alt" id="addEncyclopediaSection" type="button">+ ADD MORE</button>
-                <p class="encyclopedia-editor-note">The article source below applies to the main content. Each additional section can have its own optional source name and URL, shown beneath that section.</p>
+                <p class="encyclopedia-editor-note">The article source below applies to the main content. Each additional section can have its own optional source name and URL, shown beneath that section. Save Entry after removing a section; refreshing before saving restores the saved section.</p>
             </div>
             <div class="two-col">
                 <div><label for="source_label">Source name</label><input id="source_label" name="source_label" maxlength="240" value="{{ old('source_label', $entry?->source_label) }}" placeholder="Department of Agriculture"></div>
@@ -40,6 +40,8 @@
             const fallback = document.getElementById('body');
             const addButton = document.getElementById('addEncyclopediaSection');
             if (!editor || !fallback || !addButton) return;
+            let hasUnsavedChanges = false;
+            const markUnsaved = () => { hasUnsavedChanges = true; };
 
             const parseSections = (value) => {
                 const sections = [];
@@ -120,7 +122,7 @@
                     remove.type = 'button';
                     remove.className = 'encyclopedia-section-remove';
                     remove.textContent = 'Remove section';
-                    remove.addEventListener('click', () => { section.remove(); syncBody(); });
+                    remove.addEventListener('click', () => { section.remove(); syncBody(); markUnsaved(); });
                     sectionHead.append(remove);
                 }
 
@@ -167,12 +169,12 @@
                     sourceUrlField.append(sourceUrlInput);
 
                     section.append(sourceLabelField, sourceUrlField);
-                    sourceLabelInput.addEventListener('input', syncBody);
-                    sourceUrlInput.addEventListener('input', syncBody);
+                    sourceLabelInput.addEventListener('input', () => { syncBody(); markUnsaved(); });
+                    sourceUrlInput.addEventListener('input', () => { syncBody(); markUnsaved(); });
                 }
                 editor.append(section);
-                headingInput.addEventListener('input', syncBody);
-                contentInput.addEventListener('input', syncBody);
+                headingInput.addEventListener('input', () => { syncBody(); markUnsaved(); });
+                contentInput.addEventListener('input', () => { syncBody(); markUnsaved(); });
             };
 
             parseSections(fallback.value).forEach((section, index) => addSection(section, index > 0));
@@ -180,9 +182,19 @@
             fallback.required = false;
             addButton.addEventListener('click', () => {
                 addSection();
+                markUnsaved();
                 editor.lastElementChild?.querySelector('[data-section-heading]')?.focus();
             });
-            fallback.form?.addEventListener('submit', syncBody);
+            fallback.form?.addEventListener('submit', () => { syncBody(); hasUnsavedChanges = false; });
+            fallback.form?.querySelectorAll('input, textarea').forEach((field) => {
+                field.addEventListener('input', markUnsaved);
+                field.addEventListener('change', markUnsaved);
+            });
+            window.addEventListener('beforeunload', (event) => {
+                if (!hasUnsavedChanges) return;
+                event.preventDefault();
+                event.returnValue = '';
+            });
         })();
     </script>
 @endsection
