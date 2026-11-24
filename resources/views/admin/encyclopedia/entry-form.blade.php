@@ -54,6 +54,7 @@
                     }
                 };
                 for (const line of value.split(/\r?\n/)) {
+                    const trimmedLine = line.trim();
                     if (line.startsWith('## ')) {
                         if (content.join('\n').trim() || hasHeading) saveCurrent();
                         heading = line.slice(3).trim();
@@ -61,8 +62,8 @@
                         sourceLabel = '';
                         sourceUrl = '';
                         hasHeading = true;
-                    } else if (line.startsWith('@@ENCYCLOPEDIA_SOURCE:')) {
-                        const marker = line.match(/^@@ENCYCLOPEDIA_SOURCE:([A-Za-z0-9+/=]+)@@$/);
+                    } else if (trimmedLine.startsWith('@@ENCYCLOPEDIA_SOURCE:')) {
+                        const marker = trimmedLine.match(/^@@ENCYCLOPEDIA_SOURCE:([A-Za-z0-9+/=]+)@@$/);
                         if (marker) {
                             try {
                                 const binary = atob(marker[1]);
