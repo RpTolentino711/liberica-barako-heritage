@@ -8,6 +8,15 @@
     const searchResults = document.getElementById('farmLocationSearchResults');
     if (!element || !latitudeInput || !longitudeInput || !window.L) return;
 
+    if (L.Icon && L.Icon.Default) {
+        delete L.Icon.Default.prototype._getIconUrl;
+        L.Icon.Default.mergeOptions({
+            iconRetinaUrl: '/images/marker-icon-2x.png',
+            iconUrl: '/images/marker-icon.png',
+            shadowUrl: '/images/marker-shadow.png',
+        });
+    }
+
     const initialLatitude = Number(latitudeInput.value) || 13.9;
     const initialLongitude = Number(longitudeInput.value) || 121.1;
     const map = L.map(element, { scrollWheelZoom: false }).setView([initialLatitude, initialLongitude], 11);

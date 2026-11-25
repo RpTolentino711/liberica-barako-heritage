@@ -42,6 +42,15 @@
         if (!element) return;
         if (!window.L) { if (fallback) fallback.hidden = false; return; }
 
+        if (L.Icon && L.Icon.Default) {
+            delete L.Icon.Default.prototype._getIconUrl;
+            L.Icon.Default.mergeOptions({
+                iconRetinaUrl: '/images/marker-icon-2x.png',
+                iconUrl: '/images/marker-icon.png',
+                shadowUrl: '/images/marker-shadow.png',
+            });
+        }
+
         const places = decodeLocations(element);
         try {
             const map = L.map(element, { scrollWheelZoom: false }).setView([13.9, 121.1], 9);

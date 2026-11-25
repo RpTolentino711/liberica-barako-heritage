@@ -15,7 +15,7 @@
     <script defer src="{{ asset('js/landing.js') }}?v=encyclopedia-menu-2"></script>
     <script defer src="{{ asset('js/bean-to-cup.js') }}?v=7"></script>
     <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script defer src="{{ asset('js/heritage-farm-map.js') }}?v=5"></script>
+    <script defer src="{{ asset('js/heritage-farm-map.js') }}?v=6"></script>
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to main content</a>
