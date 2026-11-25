@@ -16,14 +16,6 @@
     function popupContent(place) {
         const wrapper = document.createElement('div');
         wrapper.className = 'farm-map-popup';
-        if (place.photo) {
-            const image = document.createElement('img');
-            image.className = 'farm-map-popup-image';
-            image.src = place.photo;
-            image.alt = place.photo_alt || place.name;
-            image.loading = 'lazy';
-            wrapper.append(image);
-        }
 
         const title = document.createElement('strong');
         title.className = 'farm-map-popup-title';
@@ -35,16 +27,11 @@
         address.textContent = place.place;
         wrapper.append(address);
 
-        const description = document.createElement('p');
-        description.className = 'farm-map-popup-description';
-        description.textContent = place.description;
-        wrapper.append(description);
-
         const mapsLink = document.createElement('a');
         mapsLink.href = place.maps;
         mapsLink.target = '_blank';
         mapsLink.rel = 'noopener noreferrer';
-        mapsLink.textContent = 'View location in Google Maps ↗';
+        mapsLink.textContent = 'View in Google Maps ↗';
         wrapper.append(mapsLink);
         return wrapper;
     }
